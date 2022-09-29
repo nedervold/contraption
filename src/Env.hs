@@ -1,6 +1,7 @@
 module Env
   ( Env(..)
   , mkEnv
+  , readGrammar
   ) where
 
 import Ebnf.Parser (parseGrammar)

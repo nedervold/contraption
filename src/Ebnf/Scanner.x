@@ -1,6 +1,6 @@
 
 {
-module Ebnf.Scanner(Token, TokenType(..), scan, testScan) where
+module Ebnf.Scanner(Token, TokenType(..), scan, testScan, AlexPosn(..)) where
 
 import Text.StdToken
 }

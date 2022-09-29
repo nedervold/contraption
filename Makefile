@@ -7,7 +7,7 @@ build :
 	stack build
 
 .PHONY : test
-test : 
+test : tidy
 	stack test
 
 .PHONY : docs
