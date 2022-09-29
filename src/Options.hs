@@ -5,7 +5,7 @@ module Options
 
 import Options.Applicative
 
-data Options = Options
+newtype Options = Options
   { grammarFile :: String
   }
 

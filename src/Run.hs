@@ -6,11 +6,11 @@ module Run
 
 import Control.Monad.IO.Class (MonadIO(..))
 import Control.Monad.Reader (MonadReader, asks)
+import Ebnf.Prettyprinter ()
 import Env (Env(grammar))
+import Prettyprinter (Pretty(..))
 
 run :: (MonadReader Env m, MonadIO m) => m ()
 run = do
   gram <- asks grammar
-  liftIO $ do
-    putStrLn "Hi!"
-    print gram
+  liftIO $ print $ pretty gram

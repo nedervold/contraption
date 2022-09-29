@@ -26,9 +26,8 @@ scprop_sortReverse list = L.sort list == L.sort (reverse list)
 -- Hspec specification
 spec_prelude :: Spec
 spec_prelude =
-  describe "Prelude.head" $ do
-    it "returns the first element of a list" $ do
-      head [23 ..] `shouldBe` (23 :: Int)
+  describe "Prelude.head" $
+  it "returns the first element of a list" $ head [23 ..] `shouldBe` (23 :: Int)
 
 -- Hedgehog specification
 hprop_reverse :: Property
