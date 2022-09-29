@@ -1,0 +1,80 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           contraption
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/nedervold/contraption#readme>
+homepage:       https://github.com/nedervold/contraption#readme
+bug-reports:    https://github.com/nedervold/contraption/issues
+author:         Eric Nedervold
+maintainer:     nedervoldsoftware@gmail.com
+copyright:      2022 Eric Nedervold
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    CHANGELOG.md
+    NOTES.txt
+
+source-repository head
+  type: git
+  location: https://github.com/nedervold/contraption
+
+library
+  exposed-modules:
+      Env
+      Options
+      Run
+  other-modules:
+      Paths_contraption
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      base >=4.7 && <5
+    , mtl
+    , optparse-applicative
+  default-language: Haskell2010
+
+executable contraption
+  main-is: Main.hs
+  other-modules:
+      Paths_contraption
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , contraption
+    , mtl
+    , optparse-applicative
+  default-language: Haskell2010
+
+test-suite contraption-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      FooSpec
+      Paths_contraption
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , contraption
+    , hedgehog
+    , hspec
+    , mtl
+    , optparse-applicative
+    , tasty
+    , tasty-discover
+    , tasty-hedgehog
+    , tasty-hspec
+    , tasty-hunit
+    , tasty-quickcheck
+    , tasty-smallcheck
+  default-language: Haskell2010
