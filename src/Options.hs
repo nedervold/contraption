@@ -6,9 +6,7 @@ module Options
 import Options.Applicative
 
 data Options = Options
-  { hello :: String
-  , quiet :: Bool
-  , enthusiasm :: Int
+  { grammarFile :: String
   }
 
 getOptions :: IO Options
@@ -18,16 +16,20 @@ opts :: ParserInfo Options
 opts =
   info
     (parser <**> helper)
-    (fullDesc <> progDesc "Print a greeting for TARGET" <>
-     header "contraption - a program to do something")
+    (fullDesc <> progDesc "Generate parser and prettyprinter code" <>
+     header "contraption - a program to generate parsers and prettyprinters")
 
 parser :: Parser Options
 parser =
   Options <$>
-  strOption (long "hello" <> metavar "TARGET" <> help "Target for the greeting") <*>
+  strOption
+    (short 'g' <> long "grammar" <> metavar "GRAMMAR-FILE" <>
+     help "Source for the grammar")
+    {- <*>
   switch (long "quiet" <> short 'q' <> help "Whether to be quiet") <*>
   option
     auto
     (long "enthusiasm" <> help "How enthusiastically to greet" <> showDefault <>
      value 1 <>
      metavar "INT")
+-}

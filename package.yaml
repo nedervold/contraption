@@ -22,8 +22,16 @@ description:         Please see the README on GitHub at <https://github.com/nede
 
 dependencies:
 - base >= 4.7 && < 5
+- algebraic-graphs
+- array
+- bytestring
+- cassava
+- containers
+- lens
 - mtl
 - optparse-applicative
+- prettyprinter
+- process
 
 ghc-options:
 - -Wall

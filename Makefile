@@ -1,11 +1,11 @@
 .PHONY : run
 run : build
-	stack exec contraption
+	stack exec contraption -- -g Ebnf.ebnf
 
 .PHONY : build
 build : 
 	stack build
-	
+
 .PHONY : test
 test : 
 	stack test
@@ -17,7 +17,7 @@ docs :
 .PHONY : lint
 lint : 
 	hlint app src test 
-	
+
 .PHONY : tidy
 tidy :
 	find . -name '*~' -delete
