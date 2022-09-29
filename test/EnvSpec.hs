@@ -15,7 +15,7 @@ spec_readGrammar =
   describe "Env.readGrammar" $ do
     it "throws IOException when the file does not exist" $
       shouldThrow (readGrammar "fooBarBazQuux") anyIOException
-    it "throws IOException  when the file contents cannot be read" $
+    it "throws IOException when the file contents cannot be read" $
       shouldThrow (withBadFile (readGrammar >=> print . pretty)) anyIOException
 
 withBadFile :: (FilePath -> IO ()) -> IO ()
