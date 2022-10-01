@@ -9,15 +9,23 @@ module DotUtils
 import Algebra.Graph.Export.Dot (Style(..), export)
 import Algebra.Graph.ToGraph (ToGraph(..))
 import System.Directory (createDirectoryIfMissing)
+import System.FilePath ((<.>), (</>))
 import System.Process (callCommand)
 import Text.Printf (printf)
 
-tmpdir :: FilePath
-tmpdir = "./graphToDot-tmpdir/"
+-- | A hacky temporary solution for a temporary directory.
+hackyTmpdir :: FilePath
+hackyTmpdir = "./graphToDot-tmpdir/"
+
+-- | A temporary wrapper to somewhat hide the hack.
+withTmpdir' :: (FilePath -> IO a) -> IO a
+withTmpdir' action = do
+  createDirectoryIfMissing False hackyTmpdir
+  action hackyTmpdir
 
 -- | Given the name of a graph, the graph, and a 'Style',, render the
--- graph and display it.  Uses the MacOS command \"open\".  Uses temp
--- directory \"./graphToDot-tmpdir\".
+-- graph and display it.  Uses the MacOS command \"open\".  Currently
+-- uses a temp directory at \"./graphToDot-tmpdir\".
 graphToDot ::
      forall g a. (ToGraph g, a ~ ToVertex g, Ord a)
   => String
@@ -32,13 +40,18 @@ graphToDot nm gr style = do
 -- | Given a graph name and its DOT-language source, render the graph
 -- and display it.  Uses the MacOS command \"open\".
 openDot :: String -> String -> IO ()
-openDot nm src = do
-  createDirectoryIfMissing False tmpdir
-  writeFile (tmpdir ++ nm ++ ".dot") src
-  callCommand $
-    printf
-      "cd %s && (cat %s.dot | dot -Tpng -o%s.png && open %s.png)"
-      tmpdir
-      nm
-      nm
-      nm
+openDot nm src =
+  withTmpdir' $ \tmpdir -> do
+    let dotNm = nm <.> "dot"
+    let imgTy = "png"
+    let imgNm = nm <.> imgTy
+    let cmd =
+          printf
+            "cd %s && (cat %s | dot -T%s -o%s && open %s)"
+            tmpdir
+            dotNm
+            imgTy
+            imgNm
+            imgNm
+    writeFile (tmpdir </> dotNm) src
+    callCommand cmd

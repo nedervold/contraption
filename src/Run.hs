@@ -1,3 +1,4 @@
+-- | Running contraption.
 {-# LANGUAGE FlexibleContexts #-}
 
 module Run
