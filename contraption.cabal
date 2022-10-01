@@ -35,8 +35,10 @@ library
       Ebnf.Syntax
       Env
       Options
+      Product
       Run
       Text.StdToken
+      Vocabulary
   other-modules:
       Paths_contraption
   hs-source-dirs:
@@ -57,6 +59,7 @@ library
     , optparse-applicative ==0.16.1.0
     , prettyprinter ==1.7.1
     , process ==1.6.13.2
+    , uniplate ==1.6.13
   default-language: Haskell2010
 
 executable contraption
@@ -82,6 +85,7 @@ executable contraption
     , optparse-applicative ==0.16.1.0
     , prettyprinter ==1.7.1
     , process ==1.6.13.2
+    , uniplate ==1.6.13
   default-language: Haskell2010
 
 test-suite contraption-test
@@ -116,4 +120,5 @@ test-suite contraption-test
     , tasty-discover ==4.2.4
     , tasty-hspec ==1.2.0.1
     , temporary ==1.3
+    , uniplate ==1.6.13
   default-language: Haskell2010

@@ -11,7 +11,8 @@ import DependencyGraph (dependencyGraph)
 import Ebnf.Parser (parseGrammar)
 import Ebnf.Scanner (scan)
 import Ebnf.Syntax (Gram)
-import Options (Options(..), Product(..))
+import Options (Options(..))
+import Product (Product(..))
 
 -- | The run-time environment for contraption.
 data Env = Env

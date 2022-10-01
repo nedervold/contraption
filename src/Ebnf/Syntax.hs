@@ -1,21 +1,28 @@
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+
 module Ebnf.Syntax where
 
+import Data.Data (Data)
+import Data.Function (on)
+import Data.Generics.Uniplate.Data ()
 import qualified Data.List.NonEmpty as NE
 import Ebnf.Scanner
+import Text.StdToken (_tokenText)
 
 newtype Gram =
   Gram (NE.NonEmpty Prod)
-  deriving (Eq, Show)
+  deriving (Data, Eq, Show)
 
 data Prod =
   Prod Token
        (NE.NonEmpty Alt)
-  deriving (Eq, Show)
+  deriving (Data, Eq, Show)
 
 data Alt =
   Alt (Maybe Token)
       [Term]
-  deriving (Eq, Show)
+  deriving (Data, Eq, Show)
 
 data Term
   = VocabTerm Vocab
@@ -26,9 +33,15 @@ data Term
             Vocab
   | Repsep1 Vocab
             Vocab
-  deriving (Eq, Show)
+  deriving (Data, Eq, Show)
 
 data Vocab
   = NT Token
   | T Token
-  deriving (Eq, Show)
+  deriving (Data, Eq, Show)
+
+instance Ord Vocab where
+  compare (NT _) (T _) = LT
+  compare (NT tok) (NT tok') = (compare `on` _tokenText) tok tok'
+  compare (T _) (NT _) = GT
+  compare (T tok) (T tok') = (compare `on` _tokenText) tok tok'

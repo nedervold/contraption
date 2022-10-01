@@ -1,7 +1,10 @@
 
 {
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE StandaloneDeriving #-}
 module Ebnf.Scanner(Token, TokenType(..), scan, testScan, AlexPosn(..)) where
 
+import Data.Data(Data, Typeable)
 import Text.StdToken
 }
 
@@ -40,9 +43,11 @@ data TokenType = COLON
     | RIGHT_BRACKET
     | UPPER_NAME 
     | YIELDS
-    deriving (Eq, Ord, Show)
+    deriving (Data, Eq, Ord, Show)
 
 type Token = StdToken TokenType String AlexPosn
+
+deriving instance Data AlexPosn
 
 scan :: String -> [Token]
 scan = alexScanTokens
