@@ -5,11 +5,9 @@ module Env
   , readGrammar
   ) where
 
-import Algebra.Graph.Export.Dot (defaultStyle)
-import Control.Concurrent.Extra (once)
+import Algebra.Graph.Export.Dot (defaultStyle, export)
 import qualified Data.Set as S
 import DependencyGraph (dependencyGraph)
-import DotUtils (graphToDot)
 import Ebnf.Parser (parseGrammar)
 import Ebnf.Scanner (scan)
 import Ebnf.Syntax (Gram)
@@ -17,10 +15,18 @@ import Options (Options(..), Product(..))
 
 -- | The run-time environment for contraption.
 data Env = Env
-  { getGrammar :: IO Gram
-  , writeDependencyGraph :: IO ()
-  , envOutputProducts :: S.Set Product
+  { grammar :: Gram -- ^ the grammar for the language
+  , dependencyGraphDotSrc :: String -- ^ DOT source for the dependency
+                                    -- graph of the grammar
+  , envOutputProducts' :: S.Set Product -- ^ requested 'Product's
   }
+
+mkEnv :: Options -> IO Env
+mkEnv options = do
+  gram <- readGrammar $ grammarFile options
+  let depGr = dependencyGraph gram
+  let dotSrc = export (defaultStyle id) depGr
+  pure $ Env gram dotSrc $ outputProducts options
 
 -- | Read the grammar from the filepath.  Does not (yet) validate it.
 readGrammar :: FilePath -> IO Gram
@@ -30,16 +36,3 @@ readGrammar fp = do
   let toks = scan src
   let gram = parseGrammar toks
   pure gram
-
--- | Create the environment from the 'Options'.
-mkEnv :: Options -> IO Env
-mkEnv options =
-  Env <$> getGrammar' <*> writeDependencyGraph' <*>
-  pure (outputProducts options)
-  where
-    getGrammar' = once $ readGrammar $ grammarFile options
-    writeDependencyGraph' =
-      once $ do
-        gram <- getGrammar'
-        depGraph <- dependencyGraph <$> gram
-        graphToDot "dependency-graph" depGraph (defaultStyle id)

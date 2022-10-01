@@ -23,7 +23,7 @@ readProductOpt opt = Left $ printf "Cannot parse %s as a product." (show opt)
 -- | Command-line options for contraption.
 data Options = Options
   { grammarFile :: FilePath -- ^ source location for the grammar's EBNF file
-  , outputProducts :: S.Set Product -- ^ set of 'Products' requested
+  , outputProducts :: S.Set Product -- ^ set of 'Product's requested
   }
 
 -- | Extract the options from the command line.

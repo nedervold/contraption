@@ -4,6 +4,7 @@
 -- | Functionality to render and show graphs using the dot executable.
 module DotUtils
   ( graphToDot
+  , openDot
   ) where
 
 import Algebra.Graph.Export.Dot (Style(..), export)
