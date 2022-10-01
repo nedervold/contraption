@@ -10,4 +10,6 @@ term ::= vocab_term : vocab
     | rep1 : LEFT_BRACE vocab RIGHT_BRACE_PLUS
     | repsep0 : LEFT_BRACE vocab ELLIPSIS vocab RIGHT_BRACE
     | repsep1 : LEFT_BRACE vocab ELLIPSIS vocab RIGHT_BRACE_PLUS.
-    
+
+vocab ::= n_t : LOWER_IDENT
+ | t : UPPER_IDENT.

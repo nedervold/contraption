@@ -39,6 +39,7 @@ library
       Options
       Product
       Run
+      SyntaxSrc
       Text.StdToken
       TokenTypeSrc
       Vocabulary

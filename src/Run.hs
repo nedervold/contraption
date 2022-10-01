@@ -15,6 +15,7 @@ import Env (Env(..))
 import HaskellUtils (putPretty)
 import Prettyprinter (Pretty(..))
 import Product (Product(..))
+import SyntaxSrc (mkSyntaxSrc)
 import TokenTypeSrc (mkTokenTypeSrc)
 
 -- | Run contraption.
@@ -38,4 +39,7 @@ runProd DependencyGraph = do
   liftIO $ openDot "dependency-graph" dotSrc
 runProd TokenTypeSrc = do
   doc <- asks mkTokenTypeSrc
+  liftIO $ putPretty $ show doc
+runProd SyntaxSrc = do
+  doc <- asks mkSyntaxSrc
   liftIO $ putPretty $ show doc

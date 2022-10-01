@@ -10,6 +10,7 @@ data Product
   | Terminals -- ^ a list of the nonterminals of the grammar
   | DependencyGraph -- ^ an image of the dependency graph
   | TokenTypeSrc -- ^ source for the type of tokens in the language
+  | SyntaxSrc -- ^ source for the type of productions in the language
   deriving (Eq, Ord, Show)
 
 -- | Read a product from a string or give an error message.
@@ -19,4 +20,5 @@ readProductOpt "nonterminals" = Right Nonterminals
 readProductOpt "terminals" = Right Terminals
 readProductOpt "dependency-graph" = Right DependencyGraph
 readProductOpt "token-type" = Right TokenTypeSrc
+readProductOpt "syntax" = Right SyntaxSrc
 readProductOpt opt = Left $ printf "Cannot parse %s as a product." (show opt)

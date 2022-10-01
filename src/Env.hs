@@ -25,6 +25,7 @@ data Env = Env
   , envOutputProducts' :: S.Set Product -- ^ requested 'Product's
   }
 
+-- | From the command-line 'Options', build the runtime environment.
 mkEnv :: Options -> IO Env
 mkEnv options = do
   gram <- readGrammar $ grammarFile options

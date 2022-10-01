@@ -2,18 +2,24 @@
 
 -- | Utilities for generating and outputting Haskell source.
 module HaskellUtils
-  ( Pragma(..)
-  , writePretty
+  ( writePretty
   , putPretty
-  , mkData
+  -- * helper types
+  , Pragma(..)
+  -- * Haskell syntax
   , mkModule
+  , mkData
+  , mkNewtype
+  , mkDefn
+  , mkFuncTy
   ) where
 
-import Data.List (sort)
+import Data.List (intersperse, sort)
 import Prettyprinter
 import System.Exit (ExitCode(..))
 import System.Process (readCreateProcessWithExitCode, shell)
 
+-- | Haskell pragmas
 data Pragma
   = Language String
   | GhcOptions String
@@ -51,9 +57,11 @@ putPretty src = do
 
 -- | Run the raw source through a Haskell prettifier.
 runThroughPrettifier :: String -> IO (ExitCode, String, String)
+-- TODO I'd like the prettifier to be configurable.  Also I need to
+-- check that it exists.
 runThroughPrettifier = readCreateProcessWithExitCode $ shell "hindent"
 
--- | Create the source for a Haskell module.
+-- | Source for a Haskell module.
 mkModule :: [Pragma] -> String -> [String] -> [String] -> Doc ann -> Doc ann
 mkModule pragmas nm exports imports body =
   vcat
@@ -68,14 +76,36 @@ mkModule pragmas nm exports imports body =
         then emptyDoc
         else tupled $ map pretty exports
 
+-- | Source for a Haskell data declaration.
 mkData :: String -> [Doc ann] -> [String] -> Doc ann
 mkData nm rhss derivations =
   "data" <+>
   pretty nm <+>
-  hang
-    4
+  align
     (vcat
        (zipWith (<+>) seps rhss ++
         ["deriving" <+> tupled (map pretty $ sort derivations)]))
   where
     seps = "=" : repeat "|"
+
+-- | Source for a Haskell newtype declaration.
+mkNewtype :: String -> Doc ann -> [String] -> Doc ann
+mkNewtype nm rhs derivations =
+  hsep
+    [ "newtype"
+    , pretty nm
+    , align $
+      vcat ["=" <+> rhs, "deriving" <+> tupled (map pretty $ sort derivations)]
+    ]
+
+-- | Source for a Haskell definition.
+mkDefn :: String -> Doc ann -> Doc ann -> Doc ann
+mkDefn nm ty rhs = vcat [sig, defn]
+  where
+    nm' = pretty nm
+    sig = hsep [nm', "::", ty]
+    defn = hsep [nm', "=", align rhs]
+
+-- | Source for a Haskell function type.
+mkFuncTy :: [Doc ann] -> Doc ann
+mkFuncTy ds = hsep $ intersperse "->" ds
