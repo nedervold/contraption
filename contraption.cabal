@@ -34,10 +34,13 @@ library
       Ebnf.Scanner
       Ebnf.Syntax
       Env
+      HaskellUtils
+      Names
       Options
       Product
       Run
       Text.StdToken
+      TokenTypeSrc
       Vocabulary
   other-modules:
       Paths_contraption

@@ -4,7 +4,7 @@
 {-# LANGUAGE StandaloneDeriving #-}
 module Ebnf.Scanner(Token, TokenType(..), scan, testScan, AlexPosn(..)) where
 
-import Data.Data(Data, Typeable)
+import Data.Data(Data)
 import Text.StdToken
 }
 
