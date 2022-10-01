@@ -5,7 +5,7 @@ prod ::= : LOWER_IDENT YIELDS { alt ... OR }+ FULL_STOP.
 alt ::= : [LOWER_IDENT] COLON { term }.
 
 term ::= vocab_term : vocab
-    | opt : LEFT_BRAKET vocab RIGHT_BRACKET
+    | opt : LEFT_BRACKET vocab RIGHT_BRACKET
     | rep0 : LEFT_BRACE vocab RIGHT_BRACE
     | rep1 : LEFT_BRACE vocab RIGHT_BRACE_PLUS
     | repsep0 : LEFT_BRACE vocab ELLIPSIS vocab RIGHT_BRACE

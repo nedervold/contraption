@@ -5,9 +5,11 @@ module HaskellUtils
   ( Pragma(..)
   , writePretty
   , putPretty
+  , mkData
   , mkModule
   ) where
 
+import Data.List (sort)
 import Prettyprinter
 import System.Exit (ExitCode(..))
 import System.Process (readCreateProcessWithExitCode, shell)
@@ -23,7 +25,7 @@ instance Pretty Pragma where
       Language str -> "LANGUAGE" <+> pretty str
       GhcOptions str -> "OPTION_GHC" <+> pretty str
     where
-      wrap = enclose "{-#" "#-}"
+      wrap d = hsep ["{-#", d, "#-}"]
 
 -- | Prettify and write Haskell source out to a file.  If prettification
 -- fails, write the raw argument string.
@@ -64,4 +66,16 @@ mkModule pragmas nm exports imports body =
     exports' =
       if null exports
         then emptyDoc
-        else list $ map pretty exports
+        else tupled $ map pretty exports
+
+mkData :: String -> [Doc ann] -> [String] -> Doc ann
+mkData nm rhss derivations =
+  "data" <+>
+  pretty nm <+>
+  hang
+    4
+    (vcat
+       (zipWith (<+>) seps rhss ++
+        ["deriving" <+> tupled (map pretty $ sort derivations)]))
+  where
+    seps = "=" : repeat "|"

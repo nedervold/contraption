@@ -35,6 +35,7 @@ dependencies:
 - optparse-applicative == 0.16.1.0
 - prettyprinter == 1.7.1
 - process == 1.6.13.2
+- split == 0.2.3.5
 - uniplate == 1.6.13
 
 ghc-options:
