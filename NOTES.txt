@@ -1,1 +1,10 @@
 Programmer notes for contraption.
+
+The model is a strict input/output model.  The user defines the source
+of inputs, and which output products they want.  Then we glue it all
+together and run it.
+
+Sources have default names and the user may define a default
+directory.  These can all be overridden.
+
+What about the outputs?

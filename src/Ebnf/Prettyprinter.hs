@@ -6,6 +6,7 @@ module Ebnf.Prettyprinter
   (
   ) where
 
+import Data.List (intersperse)
 import qualified Data.List.NonEmpty as NE
 import Ebnf.Scanner
 import Ebnf.Syntax
@@ -13,7 +14,7 @@ import Prettyprinter
 import Text.StdToken
 
 instance Pretty Gram where
-  pretty (Gram ps) = vcat $ map pretty $ NE.toList ps
+  pretty (Gram ps) = vcat $ intersperse "" $ map pretty $ NE.toList ps
 
 instance Pretty Prod where
   pretty (Prod nm alts) =
