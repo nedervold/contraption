@@ -3,6 +3,9 @@ module Names
   ( tokenTypeName
   , typeName
   , constructorName
+  , upperCamelToLowerCamel
+  , underscoreToUpperCamel
+  , underscoreToLowerCamel
   ) where
 
 import Data.Char (toLower, toUpper)
@@ -18,11 +21,23 @@ tokenTypeName = concatMap cap . splitOn "_" . (++ "_Token")
 
 -- | The name of a constructor.
 constructorName :: String -> String
-constructorName = upperCamelName
+constructorName = underscoreToUpperCamel
 
 -- | The name of a type
 typeName :: String -> String
-typeName = upperCamelName
+typeName = underscoreToUpperCamel
 
-upperCamelName :: String -> String
-upperCamelName = concatMap cap . splitOn "_"
+underscoreToUpperCamel :: String -> String
+underscoreToUpperCamel = concatMap cap . splitOn "_"
+
+underscoreToLowerCamel :: String -> String
+underscoreToLowerCamel [] = []
+underscoreToLowerCamel str = map toLower part ++ concatMap cap parts
+  where
+    s = splitOn "_" str
+    part = head s
+    parts = tail s
+
+upperCamelToLowerCamel :: String -> String
+upperCamelToLowerCamel [] = []
+upperCamelToLowerCamel (c:cs) = toLower c : cs
