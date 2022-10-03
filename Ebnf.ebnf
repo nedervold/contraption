@@ -1,8 +1,8 @@
-grammar ::= : { prod }+.
+grammar ::= : {prod}+.
 
-prod ::= : LOWER_IDENT YIELDS { alt ... OR }+ FULL_STOP.
+prod ::= : LOWER_IDENT YIELDS {alt ... OR} FULL_STOP.
 
-alt ::= : [LOWER_IDENT] COLON { term }.
+alt ::= : [LOWER_IDENT] COLON {term}.
 
 term ::= vocab_term : vocab
     | opt : LEFT_BRACKET vocab RIGHT_BRACKET
@@ -12,4 +12,4 @@ term ::= vocab_term : vocab
     | repsep1 : LEFT_BRACE vocab ELLIPSIS vocab RIGHT_BRACE_PLUS.
 
 vocab ::= n_t : LOWER_IDENT
- | t : UPPER_IDENT.
+    | t : UPPER_IDENT.

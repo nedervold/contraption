@@ -12,6 +12,8 @@ import Product (Product(..), readProductOpt)
 data Options = Options
   { grammarFile :: FilePath -- ^ source location for the grammar's EBNF file
   , outputProducts :: S.Set Product -- ^ set of 'Product's requested
+  , build :: Bool
+  , inPlace :: Bool
   }
 
 -- | Extract the options from the command line.
@@ -32,4 +34,6 @@ parser =
     (short 'g' <> long "grammar" <> metavar "GRAMMAR-FILE" <>
      help "Source for the grammar") <*>
   (S.fromList <$>
-   some (argument (eitherReader readProductOpt) (metavar "PRODUCTS...")))
+   some (argument (eitherReader readProductOpt) (metavar "PRODUCTS..."))) <*>
+  switch (short 'b' <> long "build" <> help "Build the generated source") <*>
+  switch (short 'i' <> long "in-place" <> help "Prettyprint inputs in-place")
