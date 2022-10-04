@@ -19,17 +19,17 @@ import Vocabulary (nonterminals, terminals)
 
 -- | The run-time environment for contraption.
 data Env = Env
-  { grammar :: Gram -- ^ the grammar for the language
-  , grammarFilePath :: FilePath -- ^ filepath for the grammar
-  , dependencyGraphDotSrc :: String -- ^ DOT source for the dependency
+  { envGrammar :: Gram -- ^ the grammar for the language
+  , envGrammarFilePath :: FilePath -- ^ filepath for the grammar
+  , envDependencyGraphDotSrc :: String -- ^ DOT source for the dependency
                                     -- graph of the grammar
-  , gramNonterminals :: S.Set String
-  , gramTerminals :: S.Set String
+  , envGramNonterminals :: S.Set String
+  , envGramTerminals :: S.Set String
   , envOutputProducts' :: S.Set Product -- ^ requested 'Product's
-  , buildProducts :: Bool
-  , prettyprintInPlace :: Bool
-  , languagePrefix :: String
-  , buildFilePath :: FilePath
+  , envBuildProducts :: Bool
+  , envPrettyprintInPlace :: Bool
+  , envLanguagePrefix :: String
+  , envBuildFilePath :: FilePath
   -- , tokenModule :: String
   }
 

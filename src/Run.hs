@@ -42,21 +42,21 @@ generateReports = do
   forM_ (S.toList prods) $ \prod ->
     case prod of
       Nonterminals -> do
-        nts <- asks gramNonterminals
+        nts <- asks envGramNonterminals
         liftIO $ mapM_ putStrLn $ S.toList nts
       Terminals -> do
-        nts <- asks gramTerminals
+        nts <- asks envGramTerminals
         liftIO $ mapM_ putStrLn $ S.toList nts
       DependencyGraph -> do
-        dotSrc <- asks dependencyGraphDotSrc
+        dotSrc <- asks envDependencyGraphDotSrc
         liftIO $ openDot "dependency-graph" dotSrc
       _ -> pure ()
 
 prettyprintInputs :: (MonadReader Env m, MonadIO m) => m ()
 prettyprintInputs = do
   prods <- asks envOutputProducts'
-  inPlace <- asks prettyprintInPlace
-  gf <- asks grammarFilePath
+  inPlace <- asks envPrettyprintInPlace
+  gf <- asks envGrammarFilePath
   let output d =
         liftIO $
         if inPlace
@@ -64,7 +64,7 @@ prettyprintInputs = do
             let ppSrc = show $ pretty d
             writeFileIfChanged gf $ fromString ppSrc
           else print . pretty $ d
-  when (EbnfGrammar `S.member` prods) $ asks grammar >>= output
+  when (EbnfGrammar `S.member` prods) $ asks envGrammar >>= output
 
 createBuildDir :: FilePath -> IO ()
 createBuildDir buildDir = do
@@ -79,8 +79,8 @@ generateCode ::
   => m ()
 generateCode = do
   prods <- asks envOutputProducts'
-  building <- asks buildProducts
-  buildDir <- asks buildFilePath
+  building <- asks envBuildProducts
+  buildDir <- asks envBuildFilePath
   exists <- liftIO $ doesDirectoryExist buildDir
   let shouldCreateDir = not exists && building
   when shouldCreateDir $ liftIO $ createBuildDir buildDir
@@ -105,8 +105,8 @@ generateCode = do
 compileCode :: (MonadReader Env m, MonadIO m) => m ()
 compileCode = do
   prods <- asks envOutputProducts'
-  building <- asks buildProducts
-  buildDir <- asks buildFilePath
+  building <- asks envBuildProducts
+  buildDir <- asks envBuildFilePath
   when (building && any (`S.member` prods) [TokenSrc, SyntaxSrc]) $
     liftIO $ do
       let cp = (shell "stack build") {cwd = Just buildDir}

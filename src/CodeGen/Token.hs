@@ -30,4 +30,4 @@ mkTokenSrc env =
       where
         mkRhss :: String -> Doc ann
         mkRhss = pretty . tokenTypeName
-    ts = S.toList $ gramTerminals env
+    ts = S.toList $ envGramTerminals env

@@ -22,14 +22,14 @@ mkSyntaxSrc env =
   mkModule
     [Language "DeriveDataTypeable"]
     "Syntax"
-    (map mkExport $ S.toList $ gramNonterminals env)
+    (map mkExport $ S.toList $ envGramNonterminals env)
     [ "import Data.Data(Data)"
     , "import qualified Ebnf.Extensions as Ext"
     , "import Token"
     ]
     (vcat $ map mkSyntax ps')
   where
-    Gram ps = grammar env
+    Gram ps = envGrammar env
     ps' = NE.toList ps
     mkExport :: String -> String
     mkExport nt = printf "%s(..)" $ typeName nt
