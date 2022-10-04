@@ -30,6 +30,7 @@ data Env = Env
   , prettyprintInPlace :: Bool
   , languagePrefix :: String
   , buildFilePath :: FilePath
+  -- , tokenModule :: String
   }
 
 -- | From the command-line 'Options', build the runtime environment.

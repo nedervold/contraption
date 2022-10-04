@@ -6,6 +6,8 @@ module Run
   ( run
   ) where
 
+import CodeGen.Syntax (mkSyntaxSrc)
+import CodeGen.Token (mkTokenSrc)
 import Control.Monad (forM_, void, when)
 import Control.Monad.IO.Class (MonadIO(..))
 import Control.Monad.Reader (MonadReader, asks)
@@ -22,11 +24,9 @@ import Env (Env(..))
 import HaskellUtils (putPretty)
 import Prettyprinter (Doc, Pretty(..))
 import Product (Product(..))
-import SyntaxSrc (mkSyntaxSrc)
 import System.Directory (createDirectory, doesDirectoryExist)
 import System.FilePath ((</>))
 import System.Process (CreateProcess(..), readCreateProcess, shell)
-import TokenSrc (mkTokenSrc)
 
 -- | Run contraption.
 run :: (MonadReader Env m, MonadIO m) => m ()

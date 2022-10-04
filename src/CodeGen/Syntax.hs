@@ -1,7 +1,7 @@
 -- | Generate code defining syntax for the language.
 {-# LANGUAGE OverloadedStrings #-}
 
-module SyntaxSrc
+module CodeGen.Syntax
   ( mkSyntaxSrc
   ) where
 

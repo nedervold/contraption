@@ -1,7 +1,7 @@
 -- | Generate code defining @Token@.
 {-# LANGUAGE OverloadedStrings #-}
 
-module TokenSrc
+module CodeGen.Token
   ( mkTokenSrc
   ) where
 

@@ -15,11 +15,13 @@ import Names (upperCamelToLowerCamel)
 data Config = Config
   { configLanguagePrefix :: Maybe String
   , configBuildFilePath :: Maybe FilePath
+  , configTokenSourceName :: Maybe String
   } deriving (Eq, Show)
 
 genConfig :: Gen Config
 genConfig =
   Config <$> Gen.maybe (Gen.string (Range.linear 1 10) Gen.ascii) <*>
+  Gen.maybe (Gen.string (Range.linear 1 10) Gen.ascii) <*>
   Gen.maybe (Gen.string (Range.linear 1 10) Gen.ascii)
 
 deriveJSON
@@ -30,7 +32,7 @@ deriveJSON
   ''Config
 
 readConfig :: IO Config
-readConfig = pure $ Config Nothing (Just "./build-dir")
+readConfig = pure $ Config Nothing (Just "./build-dir") (Just "Token")
 {-
 data SyntaxType
   = SimpleSyntax
