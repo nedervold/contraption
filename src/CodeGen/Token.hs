@@ -18,14 +18,14 @@ mkTokenSrc :: Env -> Doc ann
 mkTokenSrc Env {..} =
   mkModule
     [Language "DeriveDataTypeable"]
-    "Token"
+    envTokenModuleName
     ["Token, TokenType(..)"]
     ["import Data.Data(Data)", "import Text.StdToken"]
     body'
   where
     body' =
       vcat
-        [ mkData "TokenType" (map mkRhss ts) (words "Data Eq Ord")
+        [ mkData "TokenType" (map mkRhss ts) (S.toList envDatatypeDerivations)
         , "type Token = StdToken TokenType String ()"
         ]
       where

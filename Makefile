@@ -8,6 +8,16 @@ run : build
 build : 
 	stack build
 
+############################################################
+.PHONY : token
+token :  build
+	stack exec token
+
+.PHONY : syntax
+syntax :  build
+	stack exec syntax
+
+############################################################
 .PHONY : test
 test : tidy
 	stack test

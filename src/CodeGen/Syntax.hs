@@ -18,15 +18,15 @@ import Text.StdToken (_tokenText)
 
 -- | Create a 'Doc' for the module  defining syntax for the language.
 mkSyntaxSrc :: Env -> Doc ann
--- TODO I'd like to parameterize the module name, the derivations
+-- TODO I'd like to parameterize the derivations
 mkSyntaxSrc Env {..} =
   mkModule
     [Language "DeriveDataTypeable"]
-    "Syntax"
+    envSyntaxModuleName
     (map mkExport $ S.toList envGramNonterminals)
     [ "import Data.Data(Data)"
     , "import qualified Ebnf.Extensions as Ext"
-    , "import Token"
+    , "import " ++ envTokenModuleName
     ]
     (vcat $ map mkSyntax ps')
   where
@@ -35,10 +35,12 @@ mkSyntaxSrc Env {..} =
     mkExport :: String -> String
     mkExport nt = printf "%s(..)" $ typeName nt
     mkSyntax (Prod hd alts) =
-      mkData (typeName nm) (map (mkRhs nm) $ NE.toList alts) derivations
+      mkData
+        (typeName nm)
+        (map (mkRhs nm) $ NE.toList alts)
+        (S.toList envDatatypeDerivations)
       where
         nm = _tokenText hd
-    derivations = words "Eq Ord Data"
 
 mkRhs :: String -> Alt -> Doc ann
 mkRhs prodNm (Alt mCtor ts) = hsep (pretty nm : map mkTerm ts)

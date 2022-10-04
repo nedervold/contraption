@@ -1,4 +1,6 @@
 -- | The run-time environment for contraption.
+{-# LANGUAGE RecordWildCards #-}
+
 module Env
   ( Env(..)
   , mkEnv
@@ -30,12 +32,14 @@ data Env = Env
   , envPrettyprintInPlace :: Bool
   , envLanguagePrefix :: String
   , envBuildFilePath :: FilePath
-  -- , tokenModule :: String
+  , envTokenModuleName :: String
+  , envSyntaxModuleName :: String
+  , envDatatypeDerivations :: S.Set String
   }
 
 -- | From the command-line 'Options', build the runtime environment.
 mkEnv :: Config -> Options -> IO Env
-mkEnv config options = do
+mkEnv Config {..} options = do
   let gf = grammarFile options
   gram <- readGrammar gf
   let depGr = dependencyGraph gram
@@ -50,8 +54,11 @@ mkEnv config options = do
       (outputProducts options)
       (build options)
       (inPlace options)
-      (fromMaybe "" $ configLanguagePrefix config)
-      (fromMaybe "default-build-dir" $ configBuildFilePath config)
+      (fromMaybe "" configLanguagePrefix)
+      (fromMaybe "default-build-dir" configBuildFilePath)
+      (fromMaybe "Token" configTokenModuleName)
+      (fromMaybe "Syntax" configSyntaxModuleName)
+      (fromMaybe (S.singleton "Show") configDatatypeDerivations)
 
 -- | Read the grammar from the filepath.  Does not (yet) validate it.
 readGrammar :: FilePath -> IO Gram
