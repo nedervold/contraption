@@ -1,5 +1,6 @@
 -- | Generate code defining syntax for the language.
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module CodeGen.Syntax
   ( mkSyntaxSrc
@@ -18,18 +19,18 @@ import Text.StdToken (_tokenText)
 -- | Create a 'Doc' for the module  defining syntax for the language.
 mkSyntaxSrc :: Env -> Doc ann
 -- TODO I'd like to parameterize the module name, the derivations
-mkSyntaxSrc env =
+mkSyntaxSrc Env {..} =
   mkModule
     [Language "DeriveDataTypeable"]
     "Syntax"
-    (map mkExport $ S.toList $ envGramNonterminals env)
+    (map mkExport $ S.toList envGramNonterminals)
     [ "import Data.Data(Data)"
     , "import qualified Ebnf.Extensions as Ext"
     , "import Token"
     ]
     (vcat $ map mkSyntax ps')
   where
-    Gram ps = envGrammar env
+    Gram ps = envGrammar
     ps' = NE.toList ps
     mkExport :: String -> String
     mkExport nt = printf "%s(..)" $ typeName nt

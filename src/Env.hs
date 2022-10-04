@@ -25,7 +25,7 @@ data Env = Env
                                     -- graph of the grammar
   , envGramNonterminals :: S.Set String
   , envGramTerminals :: S.Set String
-  , envOutputProducts' :: S.Set Product -- ^ requested 'Product's
+  , envOutputProducts :: S.Set Product -- ^ requested 'Product's
   , envBuildProducts :: Bool
   , envPrettyprintInPlace :: Bool
   , envLanguagePrefix :: String

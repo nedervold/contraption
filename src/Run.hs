@@ -1,5 +1,6 @@
 -- | Running contraption.
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Run
@@ -10,7 +11,7 @@ import CodeGen.Syntax (mkSyntaxSrc)
 import CodeGen.Token (mkTokenSrc)
 import Control.Monad (forM_, void, when)
 import Control.Monad.IO.Class (MonadIO(..))
-import Control.Monad.Reader (MonadReader, asks)
+import Control.Monad.Reader (MonadReader, ask)
 import Data.FSEntries.IO
   ( readFSEntriesFromFS
   , writeFSEntriesToFS
@@ -38,33 +39,26 @@ run = do
 
 generateReports :: (MonadReader Env m, MonadIO m) => m ()
 generateReports = do
-  prods <- asks envOutputProducts'
-  forM_ (S.toList prods) $ \prod ->
+  Env {..} <- ask
+  forM_ (S.toList envOutputProducts) $ \prod ->
     case prod of
-      Nonterminals -> do
-        nts <- asks envGramNonterminals
-        liftIO $ mapM_ putStrLn $ S.toList nts
-      Terminals -> do
-        nts <- asks envGramTerminals
-        liftIO $ mapM_ putStrLn $ S.toList nts
-      DependencyGraph -> do
-        dotSrc <- asks envDependencyGraphDotSrc
-        liftIO $ openDot "dependency-graph" dotSrc
+      Nonterminals -> liftIO $ mapM_ putStrLn $ S.toList envGramNonterminals
+      Terminals -> liftIO $ mapM_ putStrLn $ S.toList $ envGramTerminals
+      DependencyGraph ->
+        liftIO $ openDot "dependency-graph" envDependencyGraphDotSrc
       _ -> pure ()
 
 prettyprintInputs :: (MonadReader Env m, MonadIO m) => m ()
 prettyprintInputs = do
-  prods <- asks envOutputProducts'
-  inPlace <- asks envPrettyprintInPlace
-  gf <- asks envGrammarFilePath
+  Env {..} <- ask
   let output d =
         liftIO $
-        if inPlace
+        if envPrettyprintInPlace
           then do
             let ppSrc = show $ pretty d
-            writeFileIfChanged gf $ fromString ppSrc
+            writeFileIfChanged envGrammarFilePath $ fromString ppSrc
           else print . pretty $ d
-  when (EbnfGrammar `S.member` prods) $ asks envGrammar >>= output
+  when (EbnfGrammar `S.member` envOutputProducts) $ output envGrammar
 
 createBuildDir :: FilePath -> IO ()
 createBuildDir buildDir = do
@@ -78,36 +72,36 @@ generateCode ::
      forall m. (MonadReader Env m, MonadIO m)
   => m ()
 generateCode = do
-  prods <- asks envOutputProducts'
-  building <- asks envBuildProducts
-  buildDir <- asks envBuildFilePath
-  exists <- liftIO $ doesDirectoryExist buildDir
-  let shouldCreateDir = not exists && building
-  when shouldCreateDir $ liftIO $ createBuildDir buildDir
+  env@(Env {..}) <- ask
+  exists <- liftIO $ doesDirectoryExist envBuildFilePath
+  let shouldCreateDir = not exists && envBuildProducts
+  when shouldCreateDir $ liftIO $ createBuildDir envBuildFilePath
   let output :: Product -> Doc ann -> m ()
       output prod doc =
-        if building
+        if envBuildProducts
           then case prod of
                  TokenSrc ->
                    liftIO $
-                   writeFile (buildDir </> "src" </> "Token.hs") $ show doc
+                   writeFile (envBuildFilePath </> "src" </> "Token.hs") $
+                   show doc
                  SyntaxSrc ->
                    liftIO $
-                   writeFile (buildDir </> "src" </> "Syntax.hs") $ show doc
+                   writeFile (envBuildFilePath </> "src" </> "Syntax.hs") $
+                   show doc
                  _ -> pure ()
           else liftIO . putPretty . show $ doc
-  forM_ (S.toList prods) $ \prod ->
+  forM_ (S.toList envOutputProducts) $ \prod ->
     case prod of
-      TokenSrc -> asks mkTokenSrc >>= output prod
-      SyntaxSrc -> asks mkSyntaxSrc >>= output prod
+      TokenSrc -> output prod $ mkTokenSrc env
+      SyntaxSrc -> output prod $ mkSyntaxSrc env
       _ -> pure ()
 
 compileCode :: (MonadReader Env m, MonadIO m) => m ()
 compileCode = do
-  prods <- asks envOutputProducts'
-  building <- asks envBuildProducts
-  buildDir <- asks envBuildFilePath
-  when (building && any (`S.member` prods) [TokenSrc, SyntaxSrc]) $
+  Env {..} <- ask
+  when
+    (envBuildProducts &&
+     any (`S.member` envOutputProducts) [TokenSrc, SyntaxSrc]) $
     liftIO $ do
-      let cp = (shell "stack build") {cwd = Just buildDir}
+      let cp = (shell "stack build") {cwd = Just envBuildFilePath}
       void $ readCreateProcess cp ""

@@ -1,5 +1,6 @@
 -- | Generate code defining @Token@.
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module CodeGen.Token
   ( mkTokenSrc
@@ -14,7 +15,7 @@ import Prettyprinter
 -- | Create a 'Doc' for the module defining @Token@ for the grammar.
 mkTokenSrc :: Env -> Doc ann
 -- TODO Would like to parameterize at least tokenTypeName and derivations.
-mkTokenSrc env =
+mkTokenSrc Env {..} =
   mkModule
     [Language "DeriveDataTypeable"]
     "Token"
@@ -30,4 +31,4 @@ mkTokenSrc env =
       where
         mkRhss :: String -> Doc ann
         mkRhss = pretty . tokenTypeName
-    ts = S.toList $ envGramTerminals env
+    ts = S.toList envGramTerminals
