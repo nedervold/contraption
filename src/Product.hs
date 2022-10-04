@@ -9,7 +9,7 @@ data Product
   | Nonterminals -- ^ a list of the nonterminals of the grammar
   | Terminals -- ^ a list of the nonterminals of the grammar
   | DependencyGraph -- ^ an image of the dependency graph
-  | TokenTypeSrc -- ^ source for the type of tokens in the language
+  | TokenSrc -- ^ source for the type of tokens in the language
   | SyntaxSrc -- ^ source for the type of productions in the language
   deriving (Eq, Ord, Show)
 
@@ -19,6 +19,6 @@ readProductOpt "ebnf-grammar" = Right EbnfGrammar
 readProductOpt "nonterminals" = Right Nonterminals
 readProductOpt "terminals" = Right Terminals
 readProductOpt "dependency-graph" = Right DependencyGraph
-readProductOpt "token-type" = Right TokenTypeSrc
+readProductOpt "token" = Right TokenSrc
 readProductOpt "syntax" = Right SyntaxSrc
 readProductOpt opt = Left $ printf "Cannot parse %s as a product." (show opt)

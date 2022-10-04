@@ -2,7 +2,7 @@
 run : build
 	# stack exec contraption -- -g Ebnf.ebnf ebnf-grammar  dependency-graph
 	-rm -rf build-dir
-	stack exec contraption -- -g Ebnf.ebnf --build token-type syntax
+	stack exec contraption -- -g Ebnf.ebnf --build token syntax
 
 .PHONY : build
 build : 

@@ -42,7 +42,7 @@ library
       Run
       SyntaxSrc
       Text.StdToken
-      TokenTypeSrc
+      TokenSrc
       Vocabulary
   other-modules:
       Paths_contraption

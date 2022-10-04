@@ -1,8 +1,8 @@
--- | Generate code defining @TokenType@.
+-- | Generate code defining @Token@.
 {-# LANGUAGE OverloadedStrings #-}
 
-module TokenTypeSrc
-  ( mkTokenTypeSrc
+module TokenSrc
+  ( mkTokenSrc
   ) where
 
 import qualified Data.Set as S
@@ -11,13 +11,13 @@ import HaskellUtils (Pragma(..), mkData, mkModule)
 import Names (tokenTypeName)
 import Prettyprinter
 
--- | Create a 'Doc' for the module defining @TokenType@ for the grammar.
-mkTokenTypeSrc :: Env -> Doc ann
+-- | Create a 'Doc' for the module defining @Token@ for the grammar.
+mkTokenSrc :: Env -> Doc ann
 -- TODO Would like to parameterize at least tokenTypeName and derivations.
-mkTokenTypeSrc env =
+mkTokenSrc env =
   mkModule
     [Language "DeriveDataTypeable"]
-    "TokenType"
+    "Token"
     ["Token, TokenType(..)"]
     ["import Data.Data(Data)", "import Text.StdToken"]
     body'

@@ -26,7 +26,7 @@ import SyntaxSrc (mkSyntaxSrc)
 import System.Directory (createDirectory, doesDirectoryExist)
 import System.FilePath ((</>))
 import System.Process (CreateProcess(..), readCreateProcess, shell)
-import TokenTypeSrc (mkTokenTypeSrc)
+import TokenSrc (mkTokenSrc)
 
 -- | Run contraption.
 run :: (MonadReader Env m, MonadIO m) => m ()
@@ -88,9 +88,9 @@ generateCode = do
       output prod doc =
         if building
           then case prod of
-                 TokenTypeSrc ->
+                 TokenSrc ->
                    liftIO $
-                   writeFile (buildDir </> "src" </> "TokenType.hs") $ show doc
+                   writeFile (buildDir </> "src" </> "Token.hs") $ show doc
                  SyntaxSrc ->
                    liftIO $
                    writeFile (buildDir </> "src" </> "Syntax.hs") $ show doc
@@ -98,7 +98,7 @@ generateCode = do
           else liftIO . putPretty . show $ doc
   forM_ (S.toList prods) $ \prod ->
     case prod of
-      TokenTypeSrc -> asks mkTokenTypeSrc >>= output prod
+      TokenSrc -> asks mkTokenSrc >>= output prod
       SyntaxSrc -> asks mkSyntaxSrc >>= output prod
       _ -> pure ()
 
@@ -107,7 +107,7 @@ compileCode = do
   prods <- asks envOutputProducts'
   building <- asks buildProducts
   buildDir <- asks buildFilePath
-  when (building && any (`S.member` prods) [TokenTypeSrc, SyntaxSrc]) $
+  when (building && any (`S.member` prods) [TokenSrc, SyntaxSrc]) $
     liftIO $ do
       let cp = (shell "stack build") {cwd = Just buildDir}
       void $ readCreateProcess cp ""

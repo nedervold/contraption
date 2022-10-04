@@ -25,7 +25,7 @@ mkSyntaxSrc env =
     (map mkExport $ S.toList $ gramNonterminals env)
     [ "import Data.Data(Data)"
     , "import qualified Ebnf.Extensions as Ext"
-    , "import TokenType"
+    , "import Token"
     ]
     (vcat $ map mkSyntax ps')
   where
