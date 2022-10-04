@@ -23,7 +23,10 @@ mkSyntaxSrc env =
     [Language "DeriveDataTypeable"]
     "Syntax"
     (map mkExport $ S.toList $ gramNonterminals env)
-    ["import Data.Data(Data)", "import qualified Ebnf.Extensions as Ext"]
+    [ "import Data.Data(Data)"
+    , "import qualified Ebnf.Extensions as Ext"
+    , "import TokenType"
+    ]
     (vcat $ map mkSyntax ps')
   where
     Gram ps = grammar env

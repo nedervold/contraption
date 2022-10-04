@@ -6,6 +6,8 @@ module Env
   ) where
 
 import Algebra.Graph.Export.Dot (defaultStyle, export)
+import Config (Config(..))
+import Data.Maybe (fromMaybe)
 import qualified Data.Set as S
 import DependencyGraph (dependencyGraph)
 import Ebnf.Parser (parseGrammar)
@@ -26,11 +28,13 @@ data Env = Env
   , envOutputProducts' :: S.Set Product -- ^ requested 'Product's
   , buildProducts :: Bool
   , prettyprintInPlace :: Bool
+  , languagePrefix :: String
+  , buildFilePath :: FilePath
   }
 
 -- | From the command-line 'Options', build the runtime environment.
-mkEnv :: Options -> IO Env
-mkEnv options = do
+mkEnv :: Config -> Options -> IO Env
+mkEnv config options = do
   let gf = grammarFile options
   gram <- readGrammar gf
   let depGr = dependencyGraph gram
@@ -45,6 +49,8 @@ mkEnv options = do
       (outputProducts options)
       (build options)
       (inPlace options)
+      (fromMaybe "" $ configLanguagePrefix config)
+      (fromMaybe "default-build-dir" $ configBuildFilePath config)
 
 -- | Read the grammar from the filepath.  Does not (yet) validate it.
 readGrammar :: FilePath -> IO Gram

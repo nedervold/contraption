@@ -6,10 +6,14 @@ module Run
   ( run
   ) where
 
-import Control.Monad (forM_, when)
+import Control.Monad (forM_, void, when)
 import Control.Monad.IO.Class (MonadIO(..))
 import Control.Monad.Reader (MonadReader, asks)
-import Data.FSEntries.IO (writeFileIfChanged)
+import Data.FSEntries.IO
+  ( readFSEntriesFromFS
+  , writeFSEntriesToFS
+  , writeFileIfChanged
+  )
 import qualified Data.Set as S
 import Data.String (IsString(..))
 import DotUtils (openDot)
@@ -19,6 +23,9 @@ import HaskellUtils (putPretty)
 import Prettyprinter (Doc, Pretty(..))
 import Product (Product(..))
 import SyntaxSrc (mkSyntaxSrc)
+import System.Directory (createDirectory, doesDirectoryExist)
+import System.FilePath ((</>))
+import System.Process (CreateProcess(..), readCreateProcess, shell)
 import TokenTypeSrc (mkTokenTypeSrc)
 
 -- | Run contraption.
@@ -59,23 +66,48 @@ prettyprintInputs = do
           else print . pretty $ d
   when (EbnfGrammar `S.member` prods) $ asks grammar >>= output
 
+createBuildDir :: FilePath -> IO ()
+createBuildDir buildDir = do
+  createDirectory buildDir
+  let cp = (shell "stack new --bare tmp-project") {cwd = Just buildDir}
+  void $ readCreateProcess cp ""
+  fse <- readFSEntriesFromFS "boilerplate-dir"
+  writeFSEntriesToFS buildDir fse
+
 generateCode ::
      forall m. (MonadReader Env m, MonadIO m)
   => m ()
 generateCode = do
   prods <- asks envOutputProducts'
   building <- asks buildProducts
-  let output :: Doc ann -> m ()
-      output =
+  buildDir <- asks buildFilePath
+  exists <- liftIO $ doesDirectoryExist buildDir
+  let shouldCreateDir = not exists && building
+  when shouldCreateDir $ liftIO $ createBuildDir buildDir
+  let output :: Product -> Doc ann -> m ()
+      output prod doc =
         if building
-          then error "generateCode.output: buildProducts unimplemented"
-          else liftIO . putPretty . show
+          then case prod of
+                 TokenTypeSrc ->
+                   liftIO $
+                   writeFile (buildDir </> "src" </> "TokenType.hs") $ show doc
+                 SyntaxSrc ->
+                   liftIO $
+                   writeFile (buildDir </> "src" </> "Syntax.hs") $ show doc
+                 _ -> pure ()
+          else liftIO . putPretty . show $ doc
   forM_ (S.toList prods) $ \prod ->
     case prod of
-      TokenTypeSrc -> asks mkTokenTypeSrc >>= output
-      SyntaxSrc -> asks mkSyntaxSrc >>= output
+      TokenTypeSrc -> asks mkTokenTypeSrc >>= output prod
+      SyntaxSrc -> asks mkSyntaxSrc >>= output prod
       _ -> pure ()
 
--- compileCode :: (MonadReader Env m, MonadIO m) => m ()
-compileCode :: (Monad m) => m ()
-compileCode = pure ()
+compileCode :: (MonadReader Env m, MonadIO m) => m ()
+compileCode = do
+  prods <- asks envOutputProducts'
+  building <- asks buildProducts
+  buildDir <- asks buildFilePath
+  when (building && any (`S.member` prods) [TokenTypeSrc, SyntaxSrc]) $
+    liftIO $ do
+      let cp = (shell "stack build") {cwd = Just buildDir}
+      void $ readCreateProcess cp ""

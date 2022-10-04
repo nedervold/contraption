@@ -3,3 +3,4 @@ graphToDot-tmpdir/
 \#*
 *~
 .DS_Store
+build-dir/
