@@ -58,7 +58,7 @@ library:
 executables:
   contraption:
     main:                Main.hs
-    source-dirs:         app
+    source-dirs:         app/contraption
     ghc-options:
     - -threaded
     - -rtsopts

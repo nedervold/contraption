@@ -76,7 +76,7 @@ executable contraption
   other-modules:
       Paths_contraption
   hs-source-dirs:
-      app
+      app/contraption
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson ==2.0.3.0
