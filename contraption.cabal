@@ -61,6 +61,7 @@ library
     , extra ==1.7.12
     , filepath ==1.4.2.1
     , fs-entries ==0.4.0.0
+    , hedgehog ==1.0.5
     , lens ==5.0.1
     , mtl ==2.2.2
     , optparse-applicative ==0.16.1.0
@@ -91,6 +92,7 @@ executable contraption
     , extra ==1.7.12
     , filepath ==1.4.2.1
     , fs-entries ==0.4.0.0
+    , hedgehog ==1.0.5
     , lens ==5.0.1
     , mtl ==2.2.2
     , optparse-applicative ==0.16.1.0
@@ -105,6 +107,7 @@ test-suite contraption-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      ConfigSpec
       Ebnf.ParserSpec
       Ebnf.ScannerSpec
       EnvSpec
@@ -125,6 +128,8 @@ test-suite contraption-test
     , extra ==1.7.12
     , filepath ==1.4.2.1
     , fs-entries ==0.4.0.0
+    , hedgehog ==1.0.5
+    , hedgehog-classes ==0.2.5.3
     , hspec ==2.8.5
     , lens ==5.0.1
     , mtl ==2.2.2
