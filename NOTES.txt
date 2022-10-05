@@ -7,4 +7,15 @@ together and run it.
 Sources have default names and the user may define a default
 directory.  These can all be overridden.
 
-What about the outputs?
+But developing everything monolithicly feels like a mess.  So I'm
+going to develop multiple executables, then merge them after they're
+done.
+
+Did token and syntax, for the datatypes.  Next step seems to require
+involving the CSV, doesn't it?  The Env wants access to overrides; the
+overrides *don't* live in Config but are loaded from the CSV.
+
+----
+ * What do I need to do for prettyprinting inputs?  Don't lose that.
+ * I'm not distinguishing between no exports and no export-list.
+ * I probably want to insert "full" into "module name" in Env.

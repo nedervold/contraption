@@ -11,8 +11,10 @@ module HaskellUtils
   , mkModule
   , mkData
   , mkNewtype
+  , mkInstance
   , mkDefn
   , mkFuncTy
+  , mkCase
   , bracedGroup
   ) where
 
@@ -138,3 +140,10 @@ mkFuncTy ds = hsep $ intersperse "->" ds
 
 bracedGroup :: Doc ann -> [Doc ann] -> Doc ann
 bracedGroup sep' ds = braces (align $ vsep $ punctuate sep' ds)
+
+mkCase :: Doc ann -> [Doc ann] -> Doc ann
+mkCase sel cases = hsep ["case", sel, "of", bracedGroup ";" cases]
+
+mkInstance :: Doc ann -> Doc ann -> Doc ann -> Doc ann
+mkInstance tc cls body =
+  vcat [hsep ["instance", tc, cls, "where"], indent 4 body]

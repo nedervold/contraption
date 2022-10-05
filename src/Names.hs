@@ -1,6 +1,7 @@
 -- | Names to be used in generated code.
 module Names
-  ( tokenTypeName
+  ( tokenPrettyprinterName
+  , tokenTypeName
   , typeName
   , constructorName
   , upperCamelToLowerCamel
@@ -10,6 +11,7 @@ module Names
 
 import Data.Char (toLower, toUpper)
 import Data.List.Split (splitOn)
+import Text.Printf (printf)
 
 cap :: String -> String
 cap [] = []
@@ -18,6 +20,10 @@ cap (c:cs) = toUpper c : map toLower cs
 -- | The name of the token type for a given terminal.
 tokenTypeName :: String -> String
 tokenTypeName = concatMap cap . splitOn "_" . (++ "_Token")
+
+-- | The name of the prettyprinting function for a given terminal.
+tokenPrettyprinterName :: String -> String
+tokenPrettyprinterName nm = printf "prettyprint%s" (tokenTypeName nm)
 
 -- | The name of a constructor.
 constructorName :: String -> String

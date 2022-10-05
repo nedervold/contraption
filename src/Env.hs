@@ -36,9 +36,11 @@ data Env = Env
   , envLanguagePrefix :: ModuleName
   , envBuildFilePath :: FilePath
   , envTokenModuleName :: ModuleName
+  , envTokenPrettyprintersModuleName :: ModuleName
   , envSyntaxModuleName :: ModuleName
   , envSyntaxType :: SyntaxType
   , envDatatypeDerivations :: S.Set String
+  , envTokenPrettyprint :: String -> Maybe String
   }
 
 -- | From the command-line 'Options', build the runtime environment.
@@ -57,11 +59,18 @@ mkEnv Config {..} Options {..} = do
   let envBuildFilePath = fromMaybe "default-build-dir" configBuildFilePath
   let envTokenModuleName =
         envLanguagePrefix <> fromMaybe "Token" configTokenModuleName
+  let envTokenPrettyprintersModuleName =
+        envLanguagePrefix <>
+        fromMaybe "TokenPrettyprinters" configTokenPrettyprintersModuleName
   let envSyntaxModuleName =
         envLanguagePrefix <> fromMaybe "Syntax" configSyntaxModuleName
   let envDatatypeDerivations =
         fromMaybe (S.singleton "Show") configDatatypeDerivations
   let envSyntaxType = fromMaybe SimpleSyntax configSyntaxType
+  let envTokenPrettyprint t =
+        if t == "OR"
+          then Just "const \"|\""
+          else Nothing
   pure $ Env {..}
 
 -- | Read the grammar from the filepath.  Does not (yet) validate it.

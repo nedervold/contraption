@@ -13,6 +13,10 @@ build :
 token :  build
 	stack exec token | more
 
+.PHONY : token-prettyprinters
+token-prettyprinters :  build
+	stack exec token-prettyprinters | more
+
 .PHONY : syntax
 syntax :  build
 	stack exec syntax | more
