@@ -1,5 +1,6 @@
 -- | Running contraption.
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
@@ -49,13 +50,12 @@ run = do
 generateReports :: (MonadReader Env m, MonadIO m) => m ()
 generateReports = do
   Env {..} <- ask
-  forM_ (S.toList envOutputProducts) $ \prod ->
-    case prod of
-      Nonterminals -> liftIO $ mapM_ putStrLn $ S.toList envGramNonterminals
-      Terminals -> liftIO $ mapM_ putStrLn $ S.toList $ envGramTerminals
-      DependencyGraph ->
-        liftIO $ openDot "dependency-graph" envDependencyGraphDotSrc
-      _ -> pure ()
+  forM_ (S.toList envOutputProducts) $ \case
+    Nonterminals -> liftIO $ mapM_ putStrLn $ S.toList envGramNonterminals
+    Terminals -> liftIO $ mapM_ putStrLn $ S.toList envGramTerminals
+    DependencyGraph ->
+      liftIO $ openDot "dependency-graph" envDependencyGraphDotSrc
+    _ -> pure ()
 
 prettyprintInputs :: (MonadReader Env m, MonadIO m) => m ()
 prettyprintInputs = do
@@ -81,7 +81,7 @@ generateCode ::
      forall m. (MonadReader Env m, MonadIO m)
   => m ()
 generateCode = do
-  env@(Env {..}) <- ask
+  env@Env {..} <- ask
   exists <- liftIO $ doesDirectoryExist envBuildFilePath
   let shouldCreateDir = not exists && envBuildProducts
   when shouldCreateDir $ liftIO $ createBuildDir envBuildFilePath

@@ -16,8 +16,12 @@ import qualified Hedgehog.Range as Range
 import Names (upperCamelToLowerCamel)
 
 data Config = Config
-  { configLanguagePrefix :: Maybe ModuleName -- TODO Not quite right:
-                                             -- it could be empty.
+  { configLanguagePrefix :: Maybe ModuleName
+  -- TODO Not quite right: it could be empty.  Think about this.  It
+  -- could be something like "Language.Ebnf".  It could be
+  -- intentionally empty.  And the config file might just not say.
+  -- How do I distinguish the latter two cases and *do* they need to
+  -- be distinguished?
   , configBuildFilePath :: Maybe FilePath
   , configTokenModuleName :: Maybe ModuleName
   , configSyntaxModuleName :: Maybe ModuleName

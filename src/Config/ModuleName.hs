@@ -8,7 +8,7 @@ module Config.ModuleName
   ) where
 
 import Data.Aeson (FromJSON(..), ToJSON(..), Value(..))
-import Data.Aeson.Types (Parser, withText)
+import Data.Aeson.Types (withText)
 import Data.Char (isUpper)
 import Data.List (intercalate)
 import qualified Data.List.NonEmpty as NE
@@ -28,19 +28,11 @@ newtype ModuleName = ModuleName
   } deriving (Eq, Ord, Semigroup, Show)
 
 instance FromJSON ModuleName where
-  parseJSON v = withText "ModuleName" f v
-    where
-      f :: T.Text -> Parser ModuleName
-      f txt =
-        if null str
-          then fail
-                 "parseJSON could not create a ModuleName from an empty string"
-          else pure mn
-        where
-          mn :: ModuleName
-          mn = fromString str
-          str :: String
-          str = T.unpack txt
+  parseJSON =
+    withText "ModuleName" $ \txt ->
+      if T.null txt
+        then fail "parseJSON cannot create a ModuleName from an empty string"
+        else pure $ fromString $ T.unpack txt
 
 instance ToJSON ModuleName where
   toJSON modNm =
@@ -48,35 +40,34 @@ instance ToJSON ModuleName where
     T.pack $
     intercalate "." $ map unModuleNamePart $ NE.toList $ unModuleName modNm
 
-toImport :: ModuleName -> Import
-toImport modNm =
-  Import $
-  intercalate "." $ map unModuleNamePart $ NE.toList $ unModuleName modNm
-
 instance Pretty ModuleName where
   pretty modNm =
     pretty $
     intercalate "." $ map unModuleNamePart $ NE.toList $ unModuleName modNm
 
 instance IsString ModuleName where
-  fromString "" = error ("fromString " ++ show "" ++ ": invalid")
   fromString str =
-    case parts of
-      Nothing -> error ("fromString " ++ show str ++ ": invalid")
-      Just mnps -> ModuleName $ NE.fromList mnps
+    case str of
+      [] -> error ("fromString " ++ show "" ++ ": null string is invalid")
+      _ ->
+        case parts of
+          Nothing ->
+            error ("fromString " ++ show str ++ ": a subpart is invalid")
+          Just mnps -> ModuleName $ NE.fromList mnps
     where
       parts :: Maybe [ModuleNamePart]
-      parts = sequence mParts
-      mParts :: [Maybe ModuleNamePart]
-      mParts = map (constructValid . ModuleNamePart) strs
+      parts = mapM (constructValid . ModuleNamePart) strs
       strs :: [String]
-      strs =
-        if null str
-          then []
-          else splitOn "." str
+      strs = splitOn "." str
 
 instance Validity ModuleName where
   validate = validate . unModuleName
+
+------------------------------------------------------------
+toImport :: ModuleName -> Import
+toImport modNm =
+  Import $
+  intercalate "." $ map unModuleNamePart $ NE.toList $ unModuleName modNm
 
 moduleNameToSourceFileName :: ModuleName -> FilePath
 moduleNameToSourceFileName mn = joinPath parts -<.> "hs"
@@ -84,6 +75,7 @@ moduleNameToSourceFileName mn = joinPath parts -<.> "hs"
     parts :: [FilePath]
     parts = map unModuleNamePart $ NE.toList $ unModuleName mn
 
+------------------------------------------------------------
 newtype ModuleNamePart = ModuleNamePart
   { unModuleNamePart :: String
   } deriving (Eq, Ord, Show)
@@ -104,7 +96,10 @@ genModuleNamePart :: Gen ModuleNamePart
 genModuleNamePart = do
   str <- genStr
   case constructValid $ ModuleNamePart str of
-    Nothing -> error ("genModuleNamePart: generated impossibly " ++ show str)
+    Nothing ->
+      error
+        ("genModuleNamePart: should be correct by construction but I guess not. " ++
+         show str)
     Just mnp -> pure mnp
   where
     genStr =
