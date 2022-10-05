@@ -8,6 +8,7 @@ module Config
   ) where
 
 import Config.ModuleName (ModuleName, genModuleName)
+import Config.SyntaxType (SyntaxType(..), genSyntaxType)
 import Data.Aeson.TH
 import qualified Data.Set as S
 import Hedgehog (Gen)
@@ -25,6 +26,7 @@ data Config = Config
   , configBuildFilePath :: Maybe FilePath
   , configTokenModuleName :: Maybe ModuleName
   , configSyntaxModuleName :: Maybe ModuleName
+  , configSyntaxType :: Maybe SyntaxType
   , configDatatypeDerivations :: Maybe (S.Set String)
   } deriving (Eq, Show)
 
@@ -34,6 +36,7 @@ genConfig =
   Gen.maybe (Gen.string (Range.linear 1 10) Gen.ascii) <*>
   Gen.maybe genModuleName <*>
   Gen.maybe genModuleName <*>
+  Gen.maybe genSyntaxType <*>
   Gen.maybe (pure $ S.fromList $ words "Eq Data Show")
 
 deriveJSON
@@ -52,12 +55,5 @@ readConfig =
     (Just "./build-dir")
     (Just "Token")
     (Just "Syntax")
+    (Just RecordLensSyntax)
     (Just $ S.fromList $ words "Eq Data Show")
-{-
-data SyntaxType
-  = SimpleSyntax
-  | RecordSyntax
-  | RecordLensSyntax
-  deriving (Eq, Show)
-deriveJSON defaultOptions ''SyntaxType
--}

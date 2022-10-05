@@ -30,6 +30,7 @@ library
       CodeGen.Token
       Config
       Config.ModuleName
+      Config.SyntaxType
       DependencyGraph
       DotUtils
       Ebnf.Extensions

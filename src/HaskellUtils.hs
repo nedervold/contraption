@@ -13,6 +13,7 @@ module HaskellUtils
   , mkNewtype
   , mkDefn
   , mkFuncTy
+  , bracedGroup
   ) where
 
 import Data.List (intersperse, sort)
@@ -134,3 +135,6 @@ mkDefn nm ty rhs = vcat [sig, defn]
 -- | Source for a Haskell function type.
 mkFuncTy :: [Doc ann] -> Doc ann
 mkFuncTy ds = hsep $ intersperse "->" ds
+
+bracedGroup :: Doc ann -> [Doc ann] -> Doc ann
+bracedGroup sep' ds = braces (align $ vsep $ punctuate sep' ds)

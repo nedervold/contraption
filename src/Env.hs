@@ -11,6 +11,7 @@ module Env
 import Algebra.Graph.Export.Dot (defaultStyle, export)
 import Config (Config(..))
 import Config.ModuleName (ModuleName)
+import Config.SyntaxType (SyntaxType(..))
 import Data.Maybe (fromMaybe)
 import qualified Data.Set as S
 import DependencyGraph (dependencyGraph)
@@ -36,6 +37,7 @@ data Env = Env
   , envBuildFilePath :: FilePath
   , envTokenModuleName :: ModuleName
   , envSyntaxModuleName :: ModuleName
+  , envSyntaxType :: SyntaxType
   , envDatatypeDerivations :: S.Set String
   }
 
@@ -59,6 +61,7 @@ mkEnv Config {..} Options {..} = do
         envLanguagePrefix <> fromMaybe "Syntax" configSyntaxModuleName
   let envDatatypeDerivations =
         fromMaybe (S.singleton "Show") configDatatypeDerivations
+  let envSyntaxType = fromMaybe SimpleSyntax configSyntaxType
   pure $ Env {..}
 
 -- | Read the grammar from the filepath.  Does not (yet) validate it.

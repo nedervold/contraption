@@ -31,7 +31,7 @@ ghc-options:
 - -Wincomplete-uni-patterns
 # - -Wmissing-export-lists
 - -Wmissing-home-modules
-- -Wpartial-fields
+# - -Wpartial-fields
 - -Wredundant-constraints
 
 library:
