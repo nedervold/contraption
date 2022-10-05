@@ -11,10 +11,10 @@ module Text.StdToken
   , mkAlexToken
   ) where
 
-import Control.Lens.TH (makeLenses)
 import Data.Bifunctor (Bifunctor(..))
 import Data.Data (Data, Typeable)
 import GHC.Generics (Generic)
+import Lens.Micro.TH (makeLenses)
 
 -- | A datatype for tokens.  Type synonyms will probably be used to
 -- refer to its specializations.

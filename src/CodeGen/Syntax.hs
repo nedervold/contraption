@@ -32,6 +32,7 @@ mkSyntaxSrc Env {..} =
       if envSyntaxType == RecordLensSyntax
         then syntax ++ map mkTH ps'
         else syntax
+    -- TODO Might be nice to also produce sigs.
     mkTH (Prod hd _) =
       prettyStr $ printf "makeLenses ''%s" (typeName $ _tokenText hd)
       where
@@ -48,7 +49,7 @@ mkSyntaxSrc Env {..} =
     imports =
       [ Import "Data.Data(Data)"
       , Qualified "Ebnf.Extensions" "Ext"
-      , Import "Control.Lens.TH"
+      , Import "Lens.Micro.TH"
       , toImport envTokenModuleName
       ]
     Gram ps = envGrammar
@@ -134,7 +135,8 @@ mkTermName lensed ctorNm t = f $ concat (map toLower p : map cap ps'')
         else id
     cap [] = []
     cap (c:cs) = toUpper c : map toLower cs
-    p:ps'' = ps' ++ ps
+    p = head ps'
+    ps'' = tail (ps' ++ ps)
     ps' = splitOn "_" ctorNm
     ps =
       case t of
