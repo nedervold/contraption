@@ -1,4 +1,5 @@
 -- | Generate code defining syntax for the language.
+{-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
@@ -10,7 +11,7 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Set as S
 import Ebnf.Syntax
 import Env (Env(..))
-import HaskellUtils (Pragma(..), mkData, mkModule)
+import HaskellUtils (Import(..), Pragma(..), mkData, mkModule)
 import Names (constructorName, typeName)
 import Prettyprinter
 import Text.Printf (printf)
@@ -24,9 +25,9 @@ mkSyntaxSrc Env {..} =
     [Language "DeriveDataTypeable"]
     (show envSyntaxModuleName)
     (map mkExport $ S.toList envGramNonterminals)
-    [ "import Data.Data(Data)"
-    , "import qualified Ebnf.Extensions as Ext"
-    , "import " ++ show envTokenModuleName
+    [ Import "Data.Data(Data)"
+    , Qualified "Ebnf.Extensions" "Ext"
+    , Import $ show envTokenModuleName
     ]
     (vcat $ map mkSyntax ps')
   where

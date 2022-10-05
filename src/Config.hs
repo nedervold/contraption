@@ -16,7 +16,7 @@ import qualified Hedgehog.Range as Range
 import Names (upperCamelToLowerCamel)
 
 data Config = Config
-  { configLanguagePrefix :: Maybe String
+  { configLanguagePrefix :: Maybe ModuleName
   , configBuildFilePath :: Maybe FilePath
   , configTokenModuleName :: Maybe ModuleName
   , configSyntaxModuleName :: Maybe ModuleName
@@ -25,7 +25,7 @@ data Config = Config
 
 genConfig :: Gen Config
 genConfig =
-  Config <$> Gen.maybe (Gen.string (Range.linear 1 10) Gen.ascii) <*>
+  Config <$> Gen.maybe genModuleName <*>
   Gen.maybe (Gen.string (Range.linear 1 10) Gen.ascii) <*>
   Gen.maybe genModuleName <*>
   Gen.maybe genModuleName <*>

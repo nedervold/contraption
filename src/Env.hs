@@ -32,7 +32,7 @@ data Env = Env
   , envOutputProducts :: S.Set Product -- ^ requested 'Product's
   , envBuildProducts :: Bool
   , envPrettyprintInPlace :: Bool
-  , envLanguagePrefix :: String
+  , envLanguagePrefix :: ModuleName
   , envBuildFilePath :: FilePath
   , envTokenModuleName :: ModuleName
   , envSyntaxModuleName :: ModuleName
@@ -42,25 +42,24 @@ data Env = Env
 -- | From the command-line 'Options', build the runtime environment.
 mkEnv :: Config -> Options -> IO Env
 mkEnv Config {..} options = do
-  let gf = grammarFile options
-  gram <- readGrammar gf
-  let depGr = dependencyGraph gram
-  let dotSrc = export (defaultStyle id) depGr
-  pure $
-    Env
-      gram
-      gf
-      dotSrc
-      (nonterminals gram)
-      (terminals gram)
-      (outputProducts options)
-      (build options)
-      (inPlace options)
-      (fromMaybe "" configLanguagePrefix)
-      (fromMaybe "default-build-dir" configBuildFilePath)
-      (fromMaybe "Token" configTokenModuleName)
-      (fromMaybe "Syntax" configSyntaxModuleName)
-      (fromMaybe (S.singleton "Show") configDatatypeDerivations)
+  let envGrammarFilePath = grammarFile options
+  envGrammar <- readGrammar envGrammarFilePath
+  let depGr = dependencyGraph envGrammar
+  let envDependencyGraphDotSrc = export (defaultStyle id) depGr
+  let envGramNonterminals = nonterminals envGrammar
+  let envGramTerminals = terminals envGrammar
+  let envOutputProducts = outputProducts options
+  let envBuildProducts = build options
+  let envPrettyprintInPlace = inPlace options
+  let envLanguagePrefix = fromMaybe "Language" configLanguagePrefix
+  let envBuildFilePath = fromMaybe "default-build-dir" configBuildFilePath
+  let envTokenModuleName =
+        envLanguagePrefix <> fromMaybe "Token" configTokenModuleName
+  let envSyntaxModuleName =
+        envLanguagePrefix <> fromMaybe "Syntax" configSyntaxModuleName
+  let envDatatypeDerivations =
+        fromMaybe (S.singleton "Show") configDatatypeDerivations
+  pure $ Env {..}
 
 -- | Read the grammar from the filepath.  Does not (yet) validate it.
 readGrammar :: FilePath -> IO Gram

@@ -5,6 +5,7 @@ module HaskellUtils
   ( writePretty
   , putPretty
   -- * helper types
+  , Import(..)
   , Pragma(..)
   -- * Haskell syntax
   , mkModule
@@ -15,14 +16,18 @@ module HaskellUtils
   ) where
 
 import Data.List (intersperse, sort)
+import Data.Ord (comparing)
+import qualified Data.Set as S
 import Prettyprinter
 import System.Exit (ExitCode(..))
 import System.Process (readCreateProcessWithExitCode, shell)
+import Text.Printf (printf)
 
 -- | Haskell pragmas
 data Pragma
   = Language String
   | GhcOptions String
+  deriving (Eq, Ord)
 
 instance Pretty Pragma where
   pretty p =
@@ -61,13 +66,33 @@ runThroughPrettifier :: String -> IO (ExitCode, String, String)
 -- check that it exists.
 runThroughPrettifier = readCreateProcessWithExitCode $ shell "hindent"
 
+data Import
+  = Import String
+  | Qualified String
+              String
+  deriving (Eq)
+
+instance Ord Import where
+  compare = comparing f
+    where
+      f (Import str) = (str, "")
+      f (Qualified str asStr) = (str, asStr)
+
+instance Show Import where
+  show (Import str) = printf "import %s" str
+  show (Qualified str asStr) = printf "import qualified %s as %s" str asStr
+
+instance Pretty Import where
+  pretty = pretty . show
+
 -- | Source for a Haskell module.
-mkModule :: [Pragma] -> String -> [String] -> [String] -> Doc ann -> Doc ann
+mkModule ::
+     S.Set Pragma -> String -> [String] -> S.Set Import -> Doc ann -> Doc ann
 mkModule pragmas nm exports imports body =
   vcat
-    [ vcat $ map pretty pragmas
+    [ vcat $ map pretty $ S.toList pragmas
     , "module" <+> pretty nm <+> exports' <+> "where"
-    , vcat $ map pretty imports
+    , vcat $ map pretty $ S.toList imports
     , body
     ]
   where

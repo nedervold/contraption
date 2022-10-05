@@ -1,4 +1,5 @@
 -- | Generate code defining @Token@.
+{-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
@@ -8,7 +9,7 @@ module CodeGen.Token
 
 import qualified Data.Set as S
 import Env (Env(..))
-import HaskellUtils (Pragma(..), mkData, mkModule)
+import HaskellUtils (Import(..), Pragma(..), mkData, mkModule)
 import Names (tokenTypeName)
 import Prettyprinter
 
@@ -20,7 +21,7 @@ mkTokenSrc Env {..} =
     [Language "DeriveDataTypeable"]
     (show envTokenModuleName)
     ["Token, TokenType(..)"]
-    ["import Data.Data(Data)", "import Text.StdToken"]
+    [Import "Text.StdToken", Import "Data.Data(Data)"]
     body'
   where
     body' =
