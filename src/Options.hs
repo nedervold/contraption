@@ -10,10 +10,10 @@ import Product (Product(..), readProductOpt)
 
 -- | Command-line options for contraption.
 data Options = Options
-  { grammarFile :: FilePath -- ^ source location for the grammar's EBNF file
-  , outputProducts :: S.Set Product -- ^ set of 'Product's requested
-  , build :: Bool
-  , inPlace :: Bool
+  { optionsGrammarFile :: FilePath -- ^ source location for the grammar's EBNF file
+  , optionsOutputProducts :: S.Set Product -- ^ set of 'Product's requested
+  , optionsBuild :: Bool
+  , optionsInPlace :: Bool
   }
 
 -- | Extract the options from the command line.

@@ -16,7 +16,8 @@ import qualified Hedgehog.Range as Range
 import Names (upperCamelToLowerCamel)
 
 data Config = Config
-  { configLanguagePrefix :: Maybe ModuleName
+  { configLanguagePrefix :: Maybe ModuleName -- TODO Not quite right:
+                                             -- it could be empty.
   , configBuildFilePath :: Maybe FilePath
   , configTokenModuleName :: Maybe ModuleName
   , configSyntaxModuleName :: Maybe ModuleName

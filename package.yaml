@@ -101,6 +101,7 @@ tests:
     - hspec == 2.8.5
     - tasty == 1.4.2.3
     - tasty-discover == 4.2.4
+    - tasty-hedgehog == 1.1.0.0
     - tasty-hspec == 1.2.0.1
     - temporary == 1.3
 

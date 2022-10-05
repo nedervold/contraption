@@ -41,16 +41,16 @@ data Env = Env
 
 -- | From the command-line 'Options', build the runtime environment.
 mkEnv :: Config -> Options -> IO Env
-mkEnv Config {..} options = do
-  let envGrammarFilePath = grammarFile options
+mkEnv Config {..} Options {..} = do
+  let envGrammarFilePath = optionsGrammarFile
   envGrammar <- readGrammar envGrammarFilePath
   let depGr = dependencyGraph envGrammar
   let envDependencyGraphDotSrc = export (defaultStyle id) depGr
   let envGramNonterminals = nonterminals envGrammar
   let envGramTerminals = terminals envGrammar
-  let envOutputProducts = outputProducts options
-  let envBuildProducts = build options
-  let envPrettyprintInPlace = inPlace options
+  let envOutputProducts = optionsOutputProducts
+  let envBuildProducts = optionsBuild
+  let envPrettyprintInPlace = optionsInPlace
   let envLanguagePrefix = fromMaybe "Language" configLanguagePrefix
   let envBuildFilePath = fromMaybe "default-build-dir" configBuildFilePath
   let envTokenModuleName =

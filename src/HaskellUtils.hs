@@ -87,11 +87,11 @@ instance Pretty Import where
 
 -- | Source for a Haskell module.
 mkModule ::
-     S.Set Pragma -> String -> [String] -> S.Set Import -> Doc ann -> Doc ann
+     S.Set Pragma -> Doc ann -> [String] -> S.Set Import -> Doc ann -> Doc ann
 mkModule pragmas nm exports imports body =
   vcat
     [ vcat $ map pretty $ S.toList pragmas
-    , "module" <+> pretty nm <+> exports' <+> "where"
+    , "module" <+> nm <+> exports' <+> "where"
     , vcat $ map pretty $ S.toList imports
     , body
     ]

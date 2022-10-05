@@ -19,7 +19,7 @@ mkTokenSrc :: Env -> Doc ann
 mkTokenSrc Env {..} =
   mkModule
     [Language "DeriveDataTypeable"]
-    (show envTokenModuleName)
+    (pretty envTokenModuleName)
     ["Token, TokenType(..)"]
     [Import "Text.StdToken", Import "Data.Data(Data)"]
     body'

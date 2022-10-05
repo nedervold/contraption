@@ -7,6 +7,7 @@ module CodeGen.Syntax
   ( mkSyntaxSrc
   ) where
 
+import Config.ModuleName (toImport)
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Set as S
 import Ebnf.Syntax
@@ -23,11 +24,11 @@ mkSyntaxSrc :: Env -> Doc ann
 mkSyntaxSrc Env {..} =
   mkModule
     [Language "DeriveDataTypeable"]
-    (show envSyntaxModuleName)
+    (pretty envSyntaxModuleName)
     (map mkExport $ S.toList envGramNonterminals)
     [ Import "Data.Data(Data)"
     , Qualified "Ebnf.Extensions" "Ext"
-    , Import $ show envTokenModuleName
+    , toImport envTokenModuleName
     ]
     (vcat $ map mkSyntax ps')
   where
