@@ -1,4 +1,5 @@
 -- | The run-time environment for contraption.
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module Env
@@ -9,6 +10,7 @@ module Env
 
 import Algebra.Graph.Export.Dot (defaultStyle, export)
 import Config (Config(..))
+import Config.ModuleName (ModuleName)
 import Data.Maybe (fromMaybe)
 import qualified Data.Set as S
 import DependencyGraph (dependencyGraph)
@@ -32,8 +34,8 @@ data Env = Env
   , envPrettyprintInPlace :: Bool
   , envLanguagePrefix :: String
   , envBuildFilePath :: FilePath
-  , envTokenModuleName :: String
-  , envSyntaxModuleName :: String
+  , envTokenModuleName :: ModuleName
+  , envSyntaxModuleName :: ModuleName
   , envDatatypeDerivations :: S.Set String
   }
 

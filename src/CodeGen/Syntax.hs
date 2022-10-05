@@ -22,11 +22,11 @@ mkSyntaxSrc :: Env -> Doc ann
 mkSyntaxSrc Env {..} =
   mkModule
     [Language "DeriveDataTypeable"]
-    envSyntaxModuleName
+    (show envSyntaxModuleName)
     (map mkExport $ S.toList envGramNonterminals)
     [ "import Data.Data(Data)"
     , "import qualified Ebnf.Extensions as Ext"
-    , "import " ++ envTokenModuleName
+    , "import " ++ show envTokenModuleName
     ]
     (vcat $ map mkSyntax ps')
   where

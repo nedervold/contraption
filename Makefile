@@ -11,11 +11,11 @@ build :
 ############################################################
 .PHONY : token
 token :  build
-	stack exec token
+	stack exec token | more
 
 .PHONY : syntax
 syntax :  build
-	stack exec syntax
+	stack exec syntax | more
 
 ############################################################
 .PHONY : test

@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Config
@@ -6,6 +7,7 @@ module Config
   , readConfig
   ) where
 
+import Config.ModuleName (ModuleName, genModuleName)
 import Data.Aeson.TH
 import qualified Data.Set as S
 import Hedgehog (Gen)
@@ -16,8 +18,8 @@ import Names (upperCamelToLowerCamel)
 data Config = Config
   { configLanguagePrefix :: Maybe String
   , configBuildFilePath :: Maybe FilePath
-  , configTokenModuleName :: Maybe String
-  , configSyntaxModuleName :: Maybe String
+  , configTokenModuleName :: Maybe ModuleName
+  , configSyntaxModuleName :: Maybe ModuleName
   , configDatatypeDerivations :: Maybe (S.Set String)
   } deriving (Eq, Show)
 
@@ -25,14 +27,15 @@ genConfig :: Gen Config
 genConfig =
   Config <$> Gen.maybe (Gen.string (Range.linear 1 10) Gen.ascii) <*>
   Gen.maybe (Gen.string (Range.linear 1 10) Gen.ascii) <*>
-  Gen.maybe (Gen.string (Range.linear 1 10) Gen.ascii) <*>
-  Gen.maybe (Gen.string (Range.linear 1 10) Gen.ascii) <*>
+  Gen.maybe genModuleName <*>
+  Gen.maybe genModuleName <*>
   Gen.maybe (pure $ S.fromList $ words "Eq Data Show")
 
 deriveJSON
   defaultOptions
     { omitNothingFields = True
-    , fieldLabelModifier = upperCamelToLowerCamel . drop (length "config")
+    , fieldLabelModifier =
+        upperCamelToLowerCamel . drop (length ("config" :: String))
     }
   ''Config
 
