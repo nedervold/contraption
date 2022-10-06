@@ -5,6 +5,7 @@ module CompileAll
   ) where
 
 import CodeGen.Syntax (mkSyntaxSrc)
+import CodeGen.SyntaxGenerators (mkSyntaxGeneratorsSrc)
 import CodeGen.SyntaxPrettyprinters (mkSyntaxPrettyprintersSrc)
 import CodeGen.Token (mkTokenSrc)
 import CodeGen.TokenGenerators (mkTokenGeneratorsSrc)
@@ -38,8 +39,14 @@ createBuildDir env@Env {..} buildDir = do
   where
     srcCodeFSE :: FSEntries () (Doc ann)
     srcCodeFSE =
-      tokenFSE <> syntaxFSE <> tokenGeneratorsFSE <> tokenPrettyprintersFSE <>
-      syntaxPrettyprintersFSE
+      mconcat
+        [ tokenFSE
+        , syntaxFSE
+        , tokenGeneratorsFSE
+        , tokenPrettyprintersFSE
+        , syntaxGeneratorsFSE
+        , syntaxPrettyprintersFSE
+        ]
     tokenFSE =
       singletonFileAt
         (moduleNameToSourceFileName envTokenModuleName)
@@ -56,6 +63,10 @@ createBuildDir env@Env {..} buildDir = do
       singletonFileAt
         (moduleNameToSourceFileName envTokenPrettyprintersModuleName)
         (mkTokenPrettyprintersSrc env)
+    syntaxGeneratorsFSE =
+      singletonFileAt
+        (moduleNameToSourceFileName envSyntaxGeneratorsModuleName)
+        (mkSyntaxGeneratorsSrc env)
     syntaxPrettyprintersFSE =
       singletonFileAt
         (moduleNameToSourceFileName envSyntaxPrettyprintersModuleName)

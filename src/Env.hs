@@ -39,6 +39,7 @@ data Env = Env
   , envTokenGeneratorsModuleName :: ModuleName
   , envTokenPrettyprintersModuleName :: ModuleName
   , envSyntaxModuleName :: ModuleName
+  , envSyntaxGeneratorsModuleName :: ModuleName
   , envSyntaxPrettyprintersModuleName :: ModuleName
   , envSyntaxType :: SyntaxType
   , envDatatypeDerivations :: S.Set String
@@ -72,6 +73,9 @@ mkEnv Config {..} Options {..} = do
         fromMaybe "TokenPrettyprinters" configTokenPrettyprintersModuleName
   let envSyntaxModuleName =
         envLanguagePrefix <> fromMaybe "Syntax" configSyntaxModuleName
+  let envSyntaxGeneratorsModuleName =
+        envLanguagePrefix <>
+        fromMaybe "SyntaxGenerators" configSyntaxGeneratorsModuleName
   let envSyntaxPrettyprintersModuleName =
         envLanguagePrefix <>
         fromMaybe "SyntaxPrettyprinters" configSyntaxPrettyprintersModuleName
