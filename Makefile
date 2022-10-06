@@ -25,6 +25,11 @@ syntax :  build
 syntax-prettyprinters :  build
 	stack exec syntax-prettyprinters | more
 
+.PHONY : compile-all
+compile-all :  build
+	-rm -rf build-dir
+	stack exec compile-all
+
 ############################################################
 .PHONY : test
 test : tidy

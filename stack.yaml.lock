@@ -9,12 +9,12 @@ packages:
     version: 0.4.0.0
     git: https://github.com/nedervold/fs-entries.git
     pantry-tree:
-      size: 1476
-      sha256: a042c54b190b1dd0bb924e2b6572b128e09f792a68dcba6c29e102c669746813
-    commit: cb935aec7811d2040f891c5aac8fff57ab816d46
+      size: 1477
+      sha256: e8a3f7df06d1ea931a56ad068cc82a83322f7671b37eef1edb7c3b0360ea3311
+    commit: 8ac69a2dd80e887cd40efed8a4dd2405d6076325
   original:
     git: https://github.com/nedervold/fs-entries.git
-    commit: cb935aec7811d2040f891c5aac8fff57ab816d46
+    commit: 8ac69a2dd80e887cd40efed8a4dd2405d6076325
 snapshots:
 - completed:
     size: 619403

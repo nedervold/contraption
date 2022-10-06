@@ -43,8 +43,7 @@ packages:
 #
 extra-deps:
 - git: https://github.com/nedervold/fs-entries.git
-  commit: cb935aec7811d2040f891c5aac8fff57ab816d46
-
+  commit: 8ac69a2dd80e887cd40efed8a4dd2405d6076325  
 # Override default flag values for local packages and extra-deps
 # flags: {}
 

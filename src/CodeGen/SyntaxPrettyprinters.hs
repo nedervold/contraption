@@ -9,10 +9,9 @@ module CodeGen.SyntaxPrettyprinters
 
 import Config.ModuleName (toImport)
 import qualified Data.List.NonEmpty as NE
-import qualified Data.Set as S
 import Ebnf.Syntax
 import Env (Env(..))
-import HaskellUtils (Import(..), Pragma(..), mkCase, mkInstance, mkModule)
+import HaskellUtils (Import(..), Pragma(..), mkInstance, mkModule)
 import Names -- (tokenPrettyprinterName, tokenTypeName)
 import Prettyprinter
 import Text.Printf (printf)
@@ -23,13 +22,16 @@ import Text.StdToken
 mkSyntaxPrettyprintersSrc :: Env -> Doc ann
 mkSyntaxPrettyprintersSrc Env {..} =
   mkModule
-    []
+    [GhcOptions "-Wno-orphans"]
     (pretty envSyntaxPrettyprintersModuleName)
     []
-    [Qualified "Ebnf.Extensions.Prettyprinters" "Ext", Import "Prettyprinter"]
+    [ Qualified "Ebnf.Extensions.Prettyprinters" "Ext"
+    , Import "Prettyprinter"
+    , toImport envSyntaxModuleName
+    , toImport envTokenPrettyprintersModuleName
+    ]
     body'
   where
-    ts = S.toList envGramTerminals
     Gram ps = envGrammar
     prods = NE.toList ps
     body' =
@@ -48,7 +50,7 @@ mkAlt :: (String -> Maybe String) -> String -> Alt -> Doc ann
 mkAlt ctorOverride prodNm (Alt mCtor ts) =
   hsep
     [ "pretty"
-    , parens' $ hsep $ (pretty ctorNm :) $ zipWith (\a t -> pretty a) args ts
+    , parens' $ hsep $ (pretty ctorNm :) $ zipWith (\a _t -> pretty a) args ts
     , "="
     , maybe dfltBody pretty (ctorOverride altNm)
     ]

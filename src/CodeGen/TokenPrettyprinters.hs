@@ -19,7 +19,10 @@ import Prettyprinter
 mkTokenPrettyprintersSrc :: Env -> Doc ann
 mkTokenPrettyprintersSrc Env {..} =
   mkModule
-    [Language "OverloadedStrings"]
+    [ Language "OverloadedStrings"
+    , Language "TypeSynonymInstances"
+    , Language "FlexibleInstances"
+    ]
     (pretty envTokenPrettyprintersModuleName)
     (map tokenPrettyprinterName ts)
     [ Import "Prettyprinter"
