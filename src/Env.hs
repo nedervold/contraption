@@ -36,11 +36,13 @@ data Env = Env
   , envLanguagePrefix :: ModuleName
   , envBuildFilePath :: FilePath
   , envTokenModuleName :: ModuleName
+  , envTokenGeneratorsModuleName :: ModuleName
   , envTokenPrettyprintersModuleName :: ModuleName
   , envSyntaxModuleName :: ModuleName
   , envSyntaxPrettyprintersModuleName :: ModuleName
   , envSyntaxType :: SyntaxType
   , envDatatypeDerivations :: S.Set String
+  , envTokenGenerator :: String -> Maybe String
   , envTokenPrettyprint :: String -> Maybe String
   , envSyntaxProdPrettyprint :: String -> Maybe String
   , envSyntaxAltPrettyprint :: String -> Maybe String
@@ -62,6 +64,9 @@ mkEnv Config {..} Options {..} = do
   let envBuildFilePath = fromMaybe "default-build-dir" configBuildFilePath
   let envTokenModuleName =
         envLanguagePrefix <> fromMaybe "Token" configTokenModuleName
+  let envTokenGeneratorsModuleName =
+        envLanguagePrefix <>
+        fromMaybe "TokenGenerators" configTokenGeneratorsModuleName
   let envTokenPrettyprintersModuleName =
         envLanguagePrefix <>
         fromMaybe "TokenPrettyprinters" configTokenPrettyprintersModuleName
@@ -74,6 +79,10 @@ mkEnv Config {..} Options {..} = do
         fromMaybe (S.singleton "Show") configDatatypeDerivations
   let envSyntaxType = fromMaybe SimpleSyntax configSyntaxType
   -- These come from CSV
+  let envTokenGenerator t =
+        if t == "COLON"
+          then Just "flip (Token ColonToken) () <$> pure \":\""
+          else Nothing
   let envTokenPrettyprint _ = Nothing
   let envSyntaxProdPrettyprint _ = Nothing
   let envSyntaxAltPrettyprint _ = Nothing

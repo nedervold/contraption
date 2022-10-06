@@ -1,6 +1,7 @@
 -- | Names to be used in generated code.
 module Names
-  ( tokenPrettyprinterName
+  ( tokenGeneratorName
+  , tokenPrettyprinterName
   , tokenTypeName
   , typeName
   , constructorName
@@ -20,6 +21,10 @@ cap (c:cs) = toUpper c : map toLower cs
 -- | The name of the token type for a given terminal.
 tokenTypeName :: String -> String
 tokenTypeName = concatMap cap . splitOn "_" . (++ "_Token")
+
+-- | The name of the prettyprinting function for a given terminal.
+tokenGeneratorName :: String -> String
+tokenGeneratorName nm = printf "generate%s" (tokenTypeName nm)
 
 -- | The name of the prettyprinting function for a given terminal.
 tokenPrettyprinterName :: String -> String

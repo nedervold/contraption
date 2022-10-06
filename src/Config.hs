@@ -25,6 +25,7 @@ data Config = Config
   -- be distinguished?
   , configBuildFilePath :: Maybe FilePath
   , configTokenModuleName :: Maybe ModuleName
+  , configTokenGeneratorsModuleName :: Maybe ModuleName
   , configTokenPrettyprintersModuleName :: Maybe ModuleName
   , configSyntaxModuleName :: Maybe ModuleName
   , configSyntaxPrettyprintersModuleName :: Maybe ModuleName
@@ -36,6 +37,7 @@ genConfig :: Gen Config
 genConfig =
   Config <$> Gen.maybe genModuleName <*>
   Gen.maybe (Gen.string (Range.linear 1 10) Gen.ascii) <*>
+  Gen.maybe genModuleName <*>
   Gen.maybe genModuleName <*>
   Gen.maybe genModuleName <*>
   Gen.maybe genModuleName <*>
@@ -58,6 +60,7 @@ readConfig =
     Nothing
     (Just "./build-dir")
     (Just "Token")
+    (Just "TokenGenerators")
     (Just "TokenPrettyprinters")
     (Just "Syntax")
     (Just "SyntaxPrettyprinters")

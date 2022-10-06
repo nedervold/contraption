@@ -21,3 +21,5 @@ overrides *don't* live in Config but are loaded from the CSV.
  * I probably want to insert "full" into "module name" in Env.
  * I didn't implement quasiquoters for contraption-spike.  Should.
  * An option to merge prettyprinting into CST defn avoiding orphans?
+ * I'd like to run the CompileAll sources through formatting.
+ * Be able to override the name generators in Names?

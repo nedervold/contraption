@@ -128,6 +128,7 @@ mkNewtype nm rhs derivations =
 
 -- | Source for a Haskell definition.
 mkDefn :: String -> Doc ann -> Doc ann -> Doc ann
+-- TODO What to do?  This only works with no arguments.
 mkDefn nm ty rhs = vcat [sig, defn]
   where
     nm' = pretty nm

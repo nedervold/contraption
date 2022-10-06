@@ -60,7 +60,3 @@ mkDecl ovrrd t = vcat [sig, decl]
         Just code -> pretty code
         Nothing -> hsep ["pretty", ".", "_tokenText"]
     nm = pretty $ tokenPrettyprinterName t
-{-
-prettyprintAgentKeywordToken :: Token -> Doc a
-prettyprintAgentKeywordToken = const "agent" . _tokenText
--}
