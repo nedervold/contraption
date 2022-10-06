@@ -37,7 +37,7 @@ instance Pretty Pragma where
     wrap $
     case p of
       Language str -> "LANGUAGE" <+> pretty str
-      GhcOptions str -> "OPTION_GHC" <+> pretty str
+      GhcOptions str -> "OPTIONS_GHC" <+> pretty str
     where
       wrap d = hsep ["{-#", d, "#-}"]
 

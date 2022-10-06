@@ -22,6 +22,7 @@ mkTokenPrettyprintersSrc Env {..} =
     [ Language "OverloadedStrings"
     , Language "TypeSynonymInstances"
     , Language "FlexibleInstances"
+    , GhcOptions "-Wno-orphans"
     ]
     (pretty envTokenPrettyprintersModuleName)
     (map tokenPrettyprinterName ts)

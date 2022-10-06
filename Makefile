@@ -51,3 +51,7 @@ tidy :
 .PHONY : clean
 clean : tidy
 	stack clean
+
+.PHONY : purge
+purge : clean
+	-rm -rf .stack-work

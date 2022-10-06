@@ -10,6 +10,7 @@ import CodeGen.Token (mkTokenSrc)
 import CodeGen.TokenPrettyprinters (mkTokenPrettyprintersSrc)
 import Config.ModuleName (moduleNameToSourceFileName)
 import Control.Monad (void)
+import Data.FSEntries.Forest (drawFSStructure)
 import Data.FSEntries.IO (readFSEntriesFromFS, writeFSEntriesToFS)
 import Data.FSEntries.Types (FSEntries, (<//>), singletonFileAt)
 import Data.String (IsString(..))
@@ -29,6 +30,7 @@ createBuildDir env@Env {..} buildDir = do
   void $ readCreateProcess cp ""
   fse <- readFSEntriesFromFS "boilerplate-dir"
   let fse' = fse <> ("src" <//> (fromString . show <$> srcCodeFSE))
+  putStrLn $ drawFSStructure fse'
   writeFSEntriesToFS buildDir fse'
   let cp' = (shell "stack build") {cwd = Just envBuildFilePath}
   void $ readCreateProcess cp' ""
