@@ -27,6 +27,7 @@ data Config = Config
   , configTokenModuleName :: Maybe ModuleName
   , configTokenPrettyprintersModuleName :: Maybe ModuleName
   , configSyntaxModuleName :: Maybe ModuleName
+  , configSyntaxPrettyprintersModuleName :: Maybe ModuleName
   , configSyntaxType :: Maybe SyntaxType
   , configDatatypeDerivations :: Maybe (S.Set String)
   } deriving (Eq, Show)
@@ -35,6 +36,7 @@ genConfig :: Gen Config
 genConfig =
   Config <$> Gen.maybe genModuleName <*>
   Gen.maybe (Gen.string (Range.linear 1 10) Gen.ascii) <*>
+  Gen.maybe genModuleName <*>
   Gen.maybe genModuleName <*>
   Gen.maybe genModuleName <*>
   Gen.maybe genModuleName <*>
@@ -58,5 +60,6 @@ readConfig =
     (Just "Token")
     (Just "TokenPrettyprinters")
     (Just "Syntax")
+    (Just "SyntaxPrettyprinters")
     (Just RecordLensSyntax)
     (Just $ S.fromList $ words "Eq Data Show")

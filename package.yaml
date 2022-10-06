@@ -95,6 +95,15 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - contraption
+  syntax-prettyprinters:
+    main:                Main.hs
+    source-dirs:         app/syntax-prettyprinters
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - contraption
 
 tests:
   contraption-test:

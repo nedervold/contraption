@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - microlens
 - microlens-th
+- prettyprinter
 
 ghc-options:
 - -Wall
@@ -30,10 +31,10 @@ ghc-options:
 - -Widentities
 - -Wincomplete-record-updates
 - -Wincomplete-uni-patterns
-# - -Wmissing-export-lists
 - -Wmissing-home-modules
-# - -Wpartial-fields
 - -Wredundant-constraints
+# - -Wmissing-export-lists
+# - -Wpartial-fields
 
 library:
   source-dirs: src

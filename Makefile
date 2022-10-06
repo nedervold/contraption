@@ -21,6 +21,10 @@ token-prettyprinters :  build
 syntax :  build
 	stack exec syntax | more
 
+.PHONY : syntax-prettyprinters
+syntax-prettyprinters :  build
+	stack exec syntax-prettyprinters | more
+
 ############################################################
 .PHONY : test
 test : tidy

@@ -38,9 +38,12 @@ data Env = Env
   , envTokenModuleName :: ModuleName
   , envTokenPrettyprintersModuleName :: ModuleName
   , envSyntaxModuleName :: ModuleName
+  , envSyntaxPrettyprintersModuleName :: ModuleName
   , envSyntaxType :: SyntaxType
   , envDatatypeDerivations :: S.Set String
   , envTokenPrettyprint :: String -> Maybe String
+  , envSyntaxProdPrettyprint :: String -> Maybe String
+  , envSyntaxAltPrettyprint :: String -> Maybe String
   }
 
 -- | From the command-line 'Options', build the runtime environment.
@@ -64,13 +67,16 @@ mkEnv Config {..} Options {..} = do
         fromMaybe "TokenPrettyprinters" configTokenPrettyprintersModuleName
   let envSyntaxModuleName =
         envLanguagePrefix <> fromMaybe "Syntax" configSyntaxModuleName
+  let envSyntaxPrettyprintersModuleName =
+        envLanguagePrefix <>
+        fromMaybe "SyntaxPrettyprinters" configSyntaxPrettyprintersModuleName
   let envDatatypeDerivations =
         fromMaybe (S.singleton "Show") configDatatypeDerivations
   let envSyntaxType = fromMaybe SimpleSyntax configSyntaxType
-  let envTokenPrettyprint t =
-        if t == "OR"
-          then Just "const \"|\""
-          else Nothing
+  -- These come from CSV
+  let envTokenPrettyprint _ = Nothing
+  let envSyntaxProdPrettyprint _ = Nothing
+  let envSyntaxAltPrettyprint _ = Nothing
   pure $ Env {..}
 
 -- | Read the grammar from the filepath.  Does not (yet) validate it.
