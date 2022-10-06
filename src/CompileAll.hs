@@ -37,7 +37,7 @@ createBuildDir env@Env {..} buildDir = do
   where
     srcCodeFSE :: FSEntries () (Doc ann)
     srcCodeFSE =
-      tokenFSE <> syntaxFSE <> tokenPrettyprinterFSE <> syntaxPrettyprinterFSE
+      tokenFSE <> syntaxFSE <> tokenPrettyprintersFSE <> syntaxPrettyprintersFSE
     tokenFSE =
       singletonFileAt
         (moduleNameToSourceFileName envTokenModuleName)
@@ -46,11 +46,11 @@ createBuildDir env@Env {..} buildDir = do
       singletonFileAt
         (moduleNameToSourceFileName envSyntaxModuleName)
         (mkSyntaxSrc env)
-    tokenPrettyprinterFSE =
+    tokenPrettyprintersFSE =
       singletonFileAt
         (moduleNameToSourceFileName envTokenPrettyprintersModuleName)
         (mkTokenPrettyprintersSrc env)
-    syntaxPrettyprinterFSE =
+    syntaxPrettyprintersFSE =
       singletonFileAt
         (moduleNameToSourceFileName envSyntaxPrettyprintersModuleName)
         (mkSyntaxPrettyprintersSrc env)
