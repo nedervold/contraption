@@ -6,6 +6,7 @@ module CompileAll
 
 import CodeGen.Syntax (mkSyntaxSrc)
 import CodeGen.SyntaxGenerators (mkSyntaxGeneratorsSrc)
+import CodeGen.SyntaxParsers (mkSyntaxParsersSrc)
 import CodeGen.SyntaxPrettyprinters (mkSyntaxPrettyprintersSrc)
 import CodeGen.Token (mkTokenSrc)
 import CodeGen.TokenGenerators (mkTokenGeneratorsSrc)
@@ -47,6 +48,7 @@ createBuildDir env@Env {..} buildDir = do
         , tokenParsersFSE
         , tokenPrettyprintersFSE
         , syntaxGeneratorsFSE
+        , syntaxParsersFSE
         , syntaxPrettyprintersFSE
         ]
     tokenFSE =
@@ -73,6 +75,10 @@ createBuildDir env@Env {..} buildDir = do
       singletonFileAt
         (moduleNameToSourceFileName envSyntaxGeneratorsModuleName)
         (mkSyntaxGeneratorsSrc env)
+    syntaxParsersFSE =
+      singletonFileAt
+        (moduleNameToSourceFileName envSyntaxParsersModuleName)
+        (mkSyntaxParsersSrc env)
     syntaxPrettyprintersFSE =
       singletonFileAt
         (moduleNameToSourceFileName envSyntaxPrettyprintersModuleName)

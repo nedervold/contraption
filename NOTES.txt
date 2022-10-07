@@ -16,7 +16,7 @@ involving the CSV, doesn't it?  The Env wants access to overrides; the
 overrides *don't* live in Config but are loaded from the CSV.
 
 ----
- * What do I need to do for prettyprinting inputs?  Don't lose that.
+ * What do I need to do for prettyprinting config, csv?
  * I'm not distinguishing between no exports and no export-list.
  * I probably want to insert "full" into "module name" in Env.
  * I didn't implement quasiquoters for contraption-spike.  Should.
@@ -31,3 +31,22 @@ overrides *don't* live in Config but are loaded from the CSV.
  * Parameterize the string type used in parsing?  I think not: roundtripping
    uses Strings.  But ponder more.
  * Parameterize stackage resolver.
+ * Parameterize prettyprinter used on generated code.
+
+ * finish token-generators: needs csv
+ * finish token-parsers: needs csv
+ * finish syntax-generators: needs analysis.  Pull exactly what you
+   need, though.
+ * finish syntax-parsers: needs csv
+
+token.csv
+    name,fixedSymbol,
+    generator,parser,prettyprinter
+
+syntax.csv
+    prodNm,ctorNm,
+    generator,generatorFreq,generatorRecursive,
+    parser,parserIndex,
+    prettyprinter
+
+
