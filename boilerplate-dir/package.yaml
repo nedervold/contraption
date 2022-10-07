@@ -22,8 +22,10 @@ description:         Please see the README on GitHub at <https://github.com/nede
 dependencies:
 - base >= 4.7 && < 5
 - hedgehog
+- megaparsec
 - microlens
 - microlens-th
+- parser-combinators
 - prettyprinter
 
 ghc-options:

@@ -7,15 +7,15 @@ module CodeGen.SyntaxGenerators
   ( mkSyntaxGeneratorsSrc
   ) where
 
+-- import qualified Data.List.NonEmpty as NE
+-- import Text.Printf (printf)
+-- import Text.StdToken
+-- import Ebnf.Syntax
+-- import Names()
 import Config.ModuleName (toImport)
-import qualified Data.List.NonEmpty as NE
-import Ebnf.Syntax
 import Env (Env(..))
-import HaskellUtils (Import(..), Pragma(..), mkInstance, mkModule)
-import Names -- (tokenPrettyprinterName, tokenTypeName)
+import HaskellUtils (Import(..), mkModule)
 import Prettyprinter
-import Text.Printf (printf)
-import Text.StdToken
 
 -- | Create a 'Doc' for the module defining generators for tokens
 -- in the grammar.
@@ -31,10 +31,16 @@ mkSyntaxGeneratorsSrc Env {..} =
     , toImport envTokenGeneratorsModuleName
     ]
     body'
+    -- Gram ps = envGrammar
+    -- prods = NE.toList ps
   where
-    Gram ps = envGrammar
-    prods = NE.toList ps
-    body' = "-- syntax generators go here"
+    body' =
+      vcat
+        [ "-- syntax generators go here"
+        , "-- generators involve analysis so I'm putting this on hold for now"
+        , "-- will come back to it"
+        -- TODO Come back to it.
+        ]
     -- body' = vcat $ map (mkProd envSyntaxProdPrettyprint envSyntaxAltPrettyprint) prods
 {-
 mkProd ::

@@ -9,6 +9,7 @@ import CodeGen.SyntaxGenerators (mkSyntaxGeneratorsSrc)
 import CodeGen.SyntaxPrettyprinters (mkSyntaxPrettyprintersSrc)
 import CodeGen.Token (mkTokenSrc)
 import CodeGen.TokenGenerators (mkTokenGeneratorsSrc)
+import CodeGen.TokenParsers (mkTokenParsersSrc)
 import CodeGen.TokenPrettyprinters (mkTokenPrettyprintersSrc)
 import Config.ModuleName (moduleNameToSourceFileName)
 import Control.Monad (void)
@@ -43,6 +44,7 @@ createBuildDir env@Env {..} buildDir = do
         [ tokenFSE
         , syntaxFSE
         , tokenGeneratorsFSE
+        , tokenParsersFSE
         , tokenPrettyprintersFSE
         , syntaxGeneratorsFSE
         , syntaxPrettyprintersFSE
@@ -59,6 +61,10 @@ createBuildDir env@Env {..} buildDir = do
       singletonFileAt
         (moduleNameToSourceFileName envTokenGeneratorsModuleName)
         (mkTokenGeneratorsSrc env)
+    tokenParsersFSE =
+      singletonFileAt
+        (moduleNameToSourceFileName envTokenParsersModuleName)
+        (mkTokenParsersSrc env)
     tokenPrettyprintersFSE =
       singletonFileAt
         (moduleNameToSourceFileName envTokenPrettyprintersModuleName)

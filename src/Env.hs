@@ -37,6 +37,7 @@ data Env = Env
   , envBuildFilePath :: FilePath
   , envTokenModuleName :: ModuleName
   , envTokenGeneratorsModuleName :: ModuleName
+  , envTokenParsersModuleName :: ModuleName
   , envTokenPrettyprintersModuleName :: ModuleName
   , envSyntaxModuleName :: ModuleName
   , envSyntaxGeneratorsModuleName :: ModuleName
@@ -44,6 +45,7 @@ data Env = Env
   , envSyntaxType :: SyntaxType
   , envDatatypeDerivations :: S.Set String
   , envTokenGenerator :: String -> Maybe String
+  , envTokenParser :: String -> Maybe String
   , envTokenPrettyprint :: String -> Maybe String
   , envSyntaxProdPrettyprint :: String -> Maybe String
   , envSyntaxAltPrettyprint :: String -> Maybe String
@@ -68,6 +70,9 @@ mkEnv Config {..} Options {..} = do
   let envTokenGeneratorsModuleName =
         envLanguagePrefix <>
         fromMaybe "TokenGenerators" configTokenGeneratorsModuleName
+  let envTokenParsersModuleName =
+        envLanguagePrefix <>
+        fromMaybe "TokenParsers" configTokenParsersModuleName
   let envTokenPrettyprintersModuleName =
         envLanguagePrefix <>
         fromMaybe "TokenPrettyprinters" configTokenPrettyprintersModuleName
@@ -86,6 +91,10 @@ mkEnv Config {..} Options {..} = do
   let envTokenGenerator t =
         if t == "COLON"
           then Just "flip (Token ColonToken) () <$> pure \":\""
+          else Nothing
+  let envTokenParser t =
+        if t == "COLON"
+          then Just "flip (Token ColonToken) () <$> string \":\""
           else Nothing
   let envTokenPrettyprint _ = Nothing
   let envSyntaxProdPrettyprint _ = Nothing

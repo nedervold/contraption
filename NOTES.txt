@@ -25,3 +25,9 @@ overrides *don't* live in Config but are loaded from the CSV.
  * Be able to override the name generators in Names?
  * How to insert user-defined code?  My HaskellUtils don't allow hacking
    arbitrary text in (and shouldn't).
+ * Allow alternate parsers/testers?  Or am I too opinionated?
+ * Should HaskellUtils go into CodeGen?
+ * Do I want to parameterize generateToken and parseToken?
+ * Parameterize the string type used in parsing?  I think not: roundtripping
+   uses Strings.  But ponder more.
+ * Parameterize stackage resolver.
