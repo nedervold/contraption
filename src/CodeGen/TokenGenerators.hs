@@ -7,16 +7,13 @@ module CodeGen.TokenGenerators
   ( mkTokenGeneratorsSrc
   ) where
 
+import CodeGen.GeneratorsCodeGen (GeneratorsCodeGen(..))
 import Config.ModuleName (toImport)
 import qualified Data.Set as S
 import Env (Env(..))
-import HaskellUtils (Import(..), mkCase, mkDefn, mkFuncTy, mkModule)
+import HaskellUtils (Import(..), mkCase, mkFuncTy, mkModule)
 import Names (tokenGeneratorName, tokenTypeName)
 import Prettyprinter
-import Text.Printf (printf)
-
-prettyStr :: String -> Doc ann
-prettyStr = pretty
 
 -- | Create a 'Doc' for the module defining generators for tokens
 -- in the grammar.
@@ -30,7 +27,7 @@ mkTokenGeneratorsSrc Env {..} =
     body'
   where
     ts = S.toList envGramTerminals
-    body' = vcat $ genTok ts : map (mkTokenGenerator envTokenGenerator) ts
+    body' = vcat $ genTok ts : map (tokenGenerator envSomeGeneratorsCodeGen) ts
 
 genTok :: [String] -> Doc ann
 genTok ts =
@@ -40,13 +37,3 @@ genTok ts =
     ]
   where
     f t = hsep [pretty $ tokenTypeName t, "->", pretty $ tokenGeneratorName t]
-
-mkTokenGenerator :: (String -> Maybe String) -> String -> Doc ann
-mkTokenGenerator override str =
-  mkDefn genNm "Gen Token" $ maybe dfltBody pretty (override str)
-  where
-    genNm = tokenGeneratorName str
-    msg :: String
-    -- TODO Shall I include the module name too?
-    msg = printf "%s unimplemented" genNm
-    dfltBody = prettyStr $ printf "error %s" (show msg)

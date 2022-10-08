@@ -9,6 +9,8 @@ module Env
   ) where
 
 import Algebra.Graph.Export.Dot (defaultStyle, export)
+import CodeGen.GCG (GCG(..))
+import CodeGen.GeneratorsCodeGen
 import CodeGen.PCG (PCG(..))
 import CodeGen.PPCG (PPCG(..))
 import CodeGen.ParsersCodeGen
@@ -53,9 +55,8 @@ data Env = Env
   , envSyntaxPrettyprintersModuleName :: ModuleName
   , envSyntaxType :: SyntaxType
   , envDatatypeDerivations :: S.Set String
-  , envTokenGenerator :: String -> Maybe String
-  , envTokenParser :: String -> Maybe String
   -- plug-ins
+  , envSomeGeneratorsCodeGen :: SomeGeneratorsCodeGen
   , envSomeParsersCodeGen :: SomeParsersCodeGen
   , envSomePrettyprintersCodeGen :: SomePrettyprintersCodeGen
   }
@@ -107,14 +108,18 @@ mkEnv Config {..} Options {..} = do
         fromMaybe (S.singleton "Show") configDatatypeDerivations
   let envSyntaxType = fromMaybe SimpleSyntax configSyntaxType
   -- These come from CSV
-  let envTokenGenerator t =
-        if t == "COLON"
-          then Just "flip (Token ColonToken) () <$> pure \":\""
-          else Nothing
-  let envTokenParser t =
-        if t == "COLON"
-          then Just "flip (Token ColonToken) () <$> string \":\""
-          else Nothing
+  let envSomeGeneratorsCodeGen =
+        SomeGeneratorsCodeGen $
+        GCG
+          { gcgProds = envProdMap
+          , gcgTokenOverride =
+              \t ->
+                if t == "COLON"
+                  then Just "flip (Token ColonToken) () <$> pure \":\""
+                  else Nothing
+          , gcgProdOverride = const Nothing
+          , gcgAltOverride = const Nothing
+          }
   let envSomeParsersCodeGen =
         SomeParsersCodeGen $
         PCG

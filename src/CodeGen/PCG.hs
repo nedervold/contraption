@@ -21,7 +21,7 @@ data PCG = PCG
   }
 
 instance ParsersCodeGen PCG where
-  tokenParser PCG {..} t = mkParser pcgTokenOverride t
+  tokenParser PCG {..} = mkParser pcgTokenOverride
   syntaxParser PCG {..} nt = "--" <+> pretty (syntaxParserName nt)
 
 mkParser :: (String -> Maybe String) -> String -> Doc ann
