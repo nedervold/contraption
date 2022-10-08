@@ -9,7 +9,9 @@ module Env
   ) where
 
 import Algebra.Graph.Export.Dot (defaultStyle, export)
-import CodeGen.PPCG
+import CodeGen.PCG (PCG(..))
+import CodeGen.PPCG (PPCG(..))
+import CodeGen.ParsersCodeGen
 import CodeGen.PrettyprintersCodeGen
 import Config (Config(..))
 import Config.ModuleName (ModuleName)
@@ -53,6 +55,8 @@ data Env = Env
   , envDatatypeDerivations :: S.Set String
   , envTokenGenerator :: String -> Maybe String
   , envTokenParser :: String -> Maybe String
+  -- plug-ins
+  , envSomeParsersCodeGen :: SomeParsersCodeGen
   , envSomePrettyprintersCodeGen :: SomePrettyprintersCodeGen
   }
 
@@ -111,6 +115,18 @@ mkEnv Config {..} Options {..} = do
         if t == "COLON"
           then Just "flip (Token ColonToken) () <$> string \":\""
           else Nothing
+  let envSomeParsersCodeGen =
+        SomeParsersCodeGen $
+        PCG
+          { pcgProds = envProdMap
+          , pcgTokenOverride =
+              \t ->
+                if t == "COLON"
+                  then Just "flip (Token ColonToken) () <$> string \":\""
+                  else Nothing
+          , pcgProdOverride = const Nothing
+          , pcgAltOverride = const Nothing
+          }
   let envSomePrettyprintersCodeGen =
         SomePrettyprintersCodeGen $
         PPCG

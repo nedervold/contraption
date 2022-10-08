@@ -3,6 +3,9 @@ module Names
   ( tokenGeneratorName
   , tokenParserName
   , tokenPrettyprinterName
+  , syntaxGeneratorName
+  , syntaxParserName
+  , syntaxPrettyprinterName
   , tokenTypeName
   , typeName
   , constructorName
@@ -34,6 +37,18 @@ tokenParserName nm = printf "parse%s" (tokenTypeName nm)
 -- | The name of the prettyprinting function for a given terminal.
 tokenPrettyprinterName :: String -> String
 tokenPrettyprinterName nm = printf "prettyprint%s" (tokenTypeName nm)
+
+-- | The name of the generator for a given nonterminal.
+syntaxGeneratorName :: String -> String
+syntaxGeneratorName nm = printf "generate%s" (typeName nm)
+
+-- | The name of the parser for a given nonterminal.
+syntaxParserName :: String -> String
+syntaxParserName nm = printf "parse%s" (typeName nm)
+
+-- | The name of the prettyprinting function for a given nonterminal.
+syntaxPrettyprinterName :: String -> String
+syntaxPrettyprinterName nm = printf "prettyprint%s" (typeName nm)
 
 -- | The name of a constructor.
 constructorName :: String -> String

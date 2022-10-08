@@ -19,7 +19,7 @@ token-generators :  build
 
 .PHONY : token-parsers
 token-parsers :  build
-	stack exec token-parsers | more
+	stack exec token-parsers # | more
 
 .PHONY : token-prettyprinters
 token-prettyprinters :  build
