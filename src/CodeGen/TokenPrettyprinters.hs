@@ -7,6 +7,7 @@ module CodeGen.TokenPrettyprinters
   ( mkTokenPrettyprintersSrc
   ) where
 
+import CodeGen.PrettyprintersCodeGen (tokenPrettyprinter)
 import Config.ModuleName (toImport)
 import qualified Data.Set as S
 import Env (Env(..))
@@ -30,10 +31,13 @@ mkTokenPrettyprintersSrc Env {..} =
     , toImport envTokenModuleName
     , Import "Text.StdToken"
     ]
-    body'
+    body
   where
     ts = S.toList envGramTerminals
-    body' = vcat $ (prettyTokenDefn ts :) $ map (mkDecl envTokenPrettyprint) ts
+    body =
+      vcat $
+      (prettyTokenDefn ts :) $
+      map (tokenPrettyprinter envSomePrettyprintersCodeGen) ts
 
 prettyTokenDefn :: [String] -> Doc ann
 prettyTokenDefn ts =
@@ -44,19 +48,12 @@ prettyTokenDefn ts =
     , "="
     , align $ mkCase ("_tokenType" <+> "tok") $ map toCase ts
     ]
-
-toCase :: String -> Doc ann
-toCase t =
-  hsep
-    [pretty $ tokenTypeName t, "->", pretty $ tokenPrettyprinterName t, "tok"]
-
-mkDecl :: (String -> Maybe String) -> String -> Doc ann
-mkDecl ovrrd t = vcat [sig, decl]
   where
-    sig = hsep [nm, "::", "Token", "->", "Doc", "ann"]
-    decl = hsep [nm, "=", rhs]
-    rhs =
-      case ovrrd t of
-        Just code -> pretty code
-        Nothing -> hsep ["pretty", ".", "_tokenText"]
-    nm = pretty $ tokenPrettyprinterName t
+    toCase :: String -> Doc ann
+    toCase t =
+      hsep
+        [ pretty $ tokenTypeName t
+        , "->"
+        , pretty $ tokenPrettyprinterName t
+        , "tok"
+        ]

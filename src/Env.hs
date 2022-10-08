@@ -9,22 +9,28 @@ module Env
   ) where
 
 import Algebra.Graph.Export.Dot (defaultStyle, export)
+import CodeGen.PPCG
+import CodeGen.PrettyprintersCodeGen
 import Config (Config(..))
 import Config.ModuleName (ModuleName)
 import Config.SyntaxType (SyntaxType(..))
+import qualified Data.List.NonEmpty as NE
+import qualified Data.Map as M
 import Data.Maybe (fromMaybe)
 import qualified Data.Set as S
 import DependencyGraph (dependencyGraph)
 import Ebnf.Parser (parseGrammar)
 import Ebnf.Scanner (scan)
-import Ebnf.Syntax (Gram)
+import Ebnf.Syntax (Gram(..), Prod(..))
 import Options (Options(..))
 import Product (Product(..))
+import Text.StdToken (StdToken(..))
 import Vocabulary (nonterminals, terminals)
 
 -- | The run-time environment for contraption.
 data Env = Env
   { envGrammar :: Gram -- ^ the grammar for the language
+  , envProdMap :: M.Map String Prod
   , envGrammarFilePath :: FilePath -- ^ filepath for the grammar
   , envDependencyGraphDotSrc :: String -- ^ DOT source for the dependency
                                     -- graph of the grammar
@@ -47,9 +53,7 @@ data Env = Env
   , envDatatypeDerivations :: S.Set String
   , envTokenGenerator :: String -> Maybe String
   , envTokenParser :: String -> Maybe String
-  , envTokenPrettyprint :: String -> Maybe String
-  , envSyntaxProdPrettyprint :: String -> Maybe String
-  , envSyntaxAltPrettyprint :: String -> Maybe String
+  , envSomePrettyprintersCodeGen :: SomePrettyprintersCodeGen
   }
 
 -- | From the command-line 'Options', build the runtime environment.
@@ -57,6 +61,13 @@ mkEnv :: Config -> Options -> IO Env
 mkEnv Config {..} Options {..} = do
   let envGrammarFilePath = optionsGrammarFile
   envGrammar <- readGrammar envGrammarFilePath
+  let envProdMap =
+        let Gram prods = envGrammar
+         in M.fromList
+              [ (nm, prod)
+              | prod@(Prod tok _alts) <- NE.toList prods
+              , let nm = _tokenText tok
+              ]
   let depGr = dependencyGraph envGrammar
   let envDependencyGraphDotSrc = export (defaultStyle id) depGr
   let envGramNonterminals = nonterminals envGrammar
@@ -100,9 +111,14 @@ mkEnv Config {..} Options {..} = do
         if t == "COLON"
           then Just "flip (Token ColonToken) () <$> string \":\""
           else Nothing
-  let envTokenPrettyprint _ = Nothing
-  let envSyntaxProdPrettyprint _ = Nothing
-  let envSyntaxAltPrettyprint _ = Nothing
+  let envSomePrettyprintersCodeGen =
+        SomePrettyprintersCodeGen $
+        PPCG
+          { ppcgProds = envProdMap
+          , ppcgTokenOverride = const Nothing
+          , ppcgProdOverride = const Nothing
+          , ppcgAltOverride = const Nothing
+          }
   pure $ Env {..}
 
 -- | Read the grammar from the filepath.  Does not (yet) validate it.
